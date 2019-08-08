@@ -5,7 +5,7 @@
          :value="formattedValue"
          v-bind="$props"
          type="tel"
-         @change="change"
+         @input="change"
          v-currency="{precision, decimal, thousands}"/>
 </template>
 
