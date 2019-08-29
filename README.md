@@ -99,6 +99,7 @@ And all vuetify properties
 | hint                  | false    | String    |                          |
 | light                 | false    | Boolean   |                          |
 | background-color      | false    | String    |                          |
+| hide-details          | false    | Boolean   |                          |
 
 
 ### References

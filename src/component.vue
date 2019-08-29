@@ -110,7 +110,8 @@ export default {
       default: () => []
     },
     validateOnBlur: Boolean,
-    tabindex: String
+    tabindex: String,
+    hideDetails: Boolean
   },
 
   directives: {currency},
