@@ -1,8 +1,8 @@
 # Currency Mask for Vuetify
 
 ## Features
-
-- All features from v-money as v-text-field of vuetify 1.5.x and vuetify 2.x
+- VERSION FOR VUETIFY 2.x
+- All features from v-money as v-text-field of vuetify 2.x
 
 ## Usage
 
@@ -73,7 +73,6 @@ And all vuetify properties
 | appendOuterIconCb     | false    | Function         | Working but deprecated   |
 | @click:append-outer   | false    | Function         | Not Working              |
 | autofocus             | false    | Boolean          |                          |
-| box                   | false    | Boolean          |                          |
 | browserAutocomplete   | false    | String           | Not Tested               |
 | clearable             | false    | Boolean          | Not Working Event        |
 | clearIcon             | false    | String           |                          |
@@ -83,7 +82,6 @@ And all vuetify properties
 | flat                  | false    | Boolean          |                          |
 | fullWidth             | false    | Boolean          |                          |
 | label                 | false    | String           |                          |
-| outline               | false    | Boolean          |                          |
 | prependInnerIcon      | false    | String           |                          |
 | prependInnerIconCb    | false    | Function         | Working but deprecated   |
 | @click:prepend-inner  | false    | Function         | Not Working              |

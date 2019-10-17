@@ -56,7 +56,6 @@ export default {
     appendOuterIcon: String,
     appendOuterIconCb: Function,
     autofocus: Boolean,
-    box: Boolean,
     browserAutocomplete: String,
     clearable: Boolean,
     clearIcon: {
@@ -72,7 +71,6 @@ export default {
     flat: Boolean,
     fullWidth: Boolean,
     label: String,
-    outline: Boolean,
     placeholder: String,
     prependInnerIcon: String,
     prependInnerIconCb: Function,
