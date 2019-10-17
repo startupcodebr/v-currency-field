@@ -112,19 +112,7 @@ export default {
     },
     validateOnBlur: Boolean,
     tabindex: String,
-    hideDetails: Boolean,
-    dense: Boolean,
-    filled: Boolean,
-    id: String,
-    loaderHeight: {
-      type: [Number, String]
-    },
-    loading: {
-      type: [Boolean, String]
-    },
-    outlined: Boolean,
-    rounded: Boolean,
-    shaped: Boolean
+    hideDetails: Boolean
   },
 
   directives: {currency},

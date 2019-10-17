@@ -1,8 +1,8 @@
 # Currency Mask for Vuetify
 
 ## Features
-
-- All features from v-money as v-text-field of vuetify 1.5.x and vuetify 2.x
+- VERSION FOR VUETIFY 1.x
+- All features from v-money as v-text-field of vuetify 1.x
 
 ## Usage
 
@@ -100,14 +100,6 @@ And all vuetify properties
 | light                 | false    | Boolean          |                          |
 | background-color      | false    | String           |                          |
 | hide-details          | false    | Boolean          |                          |
-| dense                 | false    | Boolean          |                          |
-| filled                | false    | Boolean          |                          |
-| id                    | false    | String           |                          |
-| loader-height         | false    | Number,String    |                          |
-| loading               | false    | Boolean,String   |                          |
-| outlined              | false    | Boolean          |                          |
-| rounded               | false    | Boolean          |                          |
-| shaped                | false    | Boolean          |                          |
 
 
 ### References
