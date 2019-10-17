@@ -1,6 +1,6 @@
 {
   "name": "v-currency-field",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Vue currency input/directive mask",
   "main": "dist/v-currency-field.js",
   "scripts": {
@@ -35,7 +35,7 @@
       "limit": "1.6 KB"
     }
   ],
-  "author": "Marcos Neves <marcos.neves@gmail.com> (https://vuejs-tips.github.io/) with adpations for vuetify by Philipe Augusto <phiny1@gmail.com>",
+  "author": "Marcos Neves <marcos.neves@gmail.com> (https://vuejs-tips.github.io/)",
   "license": "MIT",
   "devDependencies": {
     "babel-jest": "^21.2.0",

@@ -2,7 +2,7 @@
 
 ## Features
 
-- All features from v-money as v-text-field of vuetify.
+- All features from v-money as v-text-field of vuetify 1.5.x and vuetify 2.x
 
 ## Usage
 
@@ -67,39 +67,47 @@ All v-money properties
 
 And all vuetify properties
 
-| property              | Required | Type      |  Observation             |
-|-----------------------|----------|-----------| -------------------------|
-| appendOuterIcon       | false    | String    |                          |
-| appendOuterIconCb     | false    | Function  | Working but deprecated   |
-| @click:append-outer   | false    | Function  | Not Working              |
-| autofocus             | false    | Boolean   |                          |
-| box                   | false    | Boolean   |                          |
-| browserAutocomplete   | false    | String    | Not Tested               |
-| clearable             | false    | Boolean   | Not Working Event        |
-| clearIcon             | false    | String    |                          |
-| clearIconCb           | false    | Number    | Working but deprecated   |
-| @click:clear          | false    | Number    | Not Working              |
-| color                 | false    | String    |                          |
-| flat                  | false    | Boolean   |                          |
-| fullWidth             | false    | Boolean   |                          |
-| label                 | false    | String    |                          |
-| outline               | false    | Boolean   |                          |
-| prependInnerIcon      | false    | String    |                          |
-| prependInnerIconCb    | false    | Function  | Working but deprecated   |
-| @click:prepend-inner  | false    | Function  | Not Working              |
-| reverse               | false    | Boolean   |                          |
-| singleLine            | false    | Boolean   |                          |
-| solo                  | false    | Boolean   |                          |
-| soloInverted          | false    | Boolean   |                          |
-| error-messages        | false    | []        |                          |
-| disabled              | false    | Boolean   |                          |
-| readonly              | false    | Boolean   |                          |
-| dark                  | false    | Boolean   |                          |
-| height                | false    | String    |                          |
-| hint                  | false    | String    |                          |
-| light                 | false    | Boolean   |                          |
-| background-color      | false    | String    |                          |
-| hide-details          | false    | Boolean   |                          |
+| property              | Required | Type             |  Observation             |
+|-----------------------|----------|------------------| -------------------------|
+| appendOuterIcon       | false    | String           |                          |
+| appendOuterIconCb     | false    | Function         | Working but deprecated   |
+| @click:append-outer   | false    | Function         | Not Working              |
+| autofocus             | false    | Boolean          |                          |
+| box                   | false    | Boolean          |                          |
+| browserAutocomplete   | false    | String           | Not Tested               |
+| clearable             | false    | Boolean          | Not Working Event        |
+| clearIcon             | false    | String           |                          |
+| clearIconCb           | false    | Number           | Working but deprecated   |
+| @click:clear          | false    | Number           | Not Working              |
+| color                 | false    | String           |                          |
+| flat                  | false    | Boolean          |                          |
+| fullWidth             | false    | Boolean          |                          |
+| label                 | false    | String           |                          |
+| outline               | false    | Boolean          |                          |
+| prependInnerIcon      | false    | String           |                          |
+| prependInnerIconCb    | false    | Function         | Working but deprecated   |
+| @click:prepend-inner  | false    | Function         | Not Working              |
+| reverse               | false    | Boolean          |                          |
+| singleLine            | false    | Boolean          |                          |
+| solo                  | false    | Boolean          |                          |
+| soloInverted          | false    | Boolean          |                          |
+| error-messages        | false    | []               |                          |
+| disabled              | false    | Boolean          |                          |
+| readonly              | false    | Boolean          |                          |
+| dark                  | false    | Boolean          |                          |
+| height                | false    | String           |                          |
+| hint                  | false    | String           |                          |
+| light                 | false    | Boolean          |                          |
+| background-color      | false    | String           |                          |
+| hide-details          | false    | Boolean          |                          |
+| dense                 | false    | Boolean          |                          |
+| filled                | false    | Boolean          |                          |
+| id                    | false    | String           |                          |
+| loader-height         | false    | Number,String    |                          |
+| loading               | false    | Boolean,String   |                          |
+| outlined              | false    | Boolean          |                          |
+| rounded               | false    | Boolean          |                          |
+| shaped                | false    | Boolean          |                          |
 
 
 ### References

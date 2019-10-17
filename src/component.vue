@@ -5,6 +5,7 @@
          :value="formattedValue"
          v-bind="$props"
          type="tel"
+         @blur="newblur"
          @input="change"
          v-currency="{precision, decimal, thousands}"/>
 </template>
@@ -111,7 +112,19 @@ export default {
     },
     validateOnBlur: Boolean,
     tabindex: String,
-    hideDetails: Boolean
+    hideDetails: Boolean,
+    dense: Boolean,
+    filled: Boolean,
+    id: String,
+    loaderHeight: {
+      type: [Number, String]
+    },
+    loading: {
+      type: [Boolean, String]
+    },
+    outlined: Boolean,
+    rounded: Boolean,
+    shaped: Boolean
   },
 
   directives: {currency},
@@ -154,6 +167,9 @@ export default {
   methods: {
     change (newVal) {
       this.$emit('input', this.masked ? newVal : unformat(newVal, this.precision))
+    },
+    newblur (newVal) {
+      this.$emit('blur', newVal)
     }
   }
 }
