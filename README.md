@@ -1,10 +1,7 @@
 # Currency Mask for Vuetify
 
 ## Features
-- VERSION FOR VUETIFY 2.x
-- All features from v-money as v-text-field of vuetify 2.x
-
-## Usage
+- All features from v-money as v-text-field of vuetify.
 
 ## Compatibility
 
@@ -13,6 +10,8 @@
 | branch    | tag       | release |   |               |
 | vuetify1x | vuetify1x | 1.x     | → | 1.x           |
 | master    | latest    | 2.x     | → | 2.x           |
+
+## Usage
 
 ### Default Install
 
@@ -29,7 +28,7 @@ Vue.use(currency)
 
 Webpack don't reconize v-text-field inside v-currency-field component. In this case we need to install v-text-field globally.
 
-## Vue Cli
+#### Vue Cli
 
 plugins/vuetify.js
 
@@ -62,7 +61,7 @@ new Vue({
 }).$mount('#app');
 ```
 
-## Nuxt
+#### Nuxt
 
 plugins/Vuetify.js
 
