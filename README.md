@@ -6,7 +6,15 @@
 
 ## Usage
 
-### Globally
+## Compatibility
+
+|     v-currency-field            |   | Vuetify       |
+|:-------------------------------:|:-:| :-----------: |
+| branch    | tag       | release |   |               |
+| vuetify1x | vuetify1x | 1.x     | → | 1.x           |
+| master    | latest    | 2.x     | → | 2.x           |
+
+### Default Install
 
 ```js
 import Vue from 'vue'
@@ -15,6 +23,84 @@ import currency from 'v-currency-field'
 import 'v-currency-field/dist/index.css'
 
 Vue.use(currency)
+```
+
+### Install for Tree Shaking 
+
+Webpack don't reconize v-text-field inside v-currency-field component. In this case we need to install v-text-field globally.
+
+## Vue Cli
+
+plugins/vuetify.js
+
+```js
+import Vue from 'vue';
+import Vuetify from 'vuetify/lib';
+import { VTextField } from 'vuetify/lib';
+
+import 'vuetify/dist/vuetify.min.css';
+
+Vue.use(
+  Vuetify, 
+  { components: { VTextField } }
+);
+
+const opts = {}
+export default new Vuetify(opts);
+
+```
+
+main.js
+
+```js
+import Vue from 'vue';
+import vuetify from './plugins/vuetify';
+
+new Vue({
+  vuetify,
+  render: h => h(App),
+}).$mount('#app');
+```
+
+## Nuxt
+
+plugins/Vuetify.js
+
+```js
+import Vue from 'vue'
+import Vuetify, { VTextField } from 'vuetify/lib'
+
+Vue.component('v-text-field', VTextField)
+
+const opts = {}
+export default new Vuetify(opts)
+
+```
+
+
+plugins/vCurrencyField.js
+
+```js
+import Vue from 'vue'
+import currency from 'v-currency-field'
+
+import 'v-currency-field/dist/index.css'
+
+Vue.use(currency)
+
+```
+
+nuxt.config.js
+
+```js
+/*
+** Plugins to load before mounting the App
+*/
+plugins: [
+  '~/plugins/Vuetify.js',
+  '~/plugins/vCurrencyField.js'
+],
+
 ```
 
 ### Example
