@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.0.0 
+ * v-currency-field v3.0.1 
  * (c) 2019 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -913,7 +913,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-var version = '3.0.0';
+var version = '3.0.1';
 
 function install(Vue, globalOptions) {
   if (globalOptions) {

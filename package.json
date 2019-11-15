@@ -1,6 +1,6 @@
 {
   "name": "v-currency-field",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Currency component for vuetify v-text-field",
   "author": "Philipe Augusto <phiny1@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,9 @@
     "dist/v-currency-field.umd.min.js",
     "dist/v-currency-field.umd.js",
     "dist/v-currency-field.esm.js",
-    "src"
+    "src",
+    "nuxt",
+    "nuxt-treeshaking"
   ],
   "dependencies": {},
   "devDependencies": {
