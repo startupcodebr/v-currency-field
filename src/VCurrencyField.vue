@@ -75,6 +75,11 @@ export default {
       }
     }
   },
+  watch: {
+    value (value) {
+      dispatchEvent(this.$el.querySelector('input'), 'format', { value })
+    }
+  },
   methods: {
     listeners() {
       // eslint-disable-next-line

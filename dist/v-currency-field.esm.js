@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.0.4 
+ * v-currency-field v3.0.5 
  * (c) 2019 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -742,6 +742,13 @@ var script = {
       }
     }
   },
+  watch: {
+    value: function value(_value) {
+      dispatchEvent(this.$el.querySelector('input'), 'format', {
+        value: _value
+      });
+    }
+  },
   methods: {
     listeners: function listeners() {
       var _this = this;
@@ -924,7 +931,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-var version = '3.0.4';
+var version = '3.0.5';
 
 function install(Vue, globalOptions) {
   if (globalOptions) {
