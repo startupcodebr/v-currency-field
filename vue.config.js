@@ -4,7 +4,7 @@ module.exports = {
    pluginOptions: {
      p11n: {
        configureRollup: {
-         external: ['vuetify/lib']
+         external: ['vuetify/lib', 'vuetify', 'vue', 'core-js']
        }
      }
    }
