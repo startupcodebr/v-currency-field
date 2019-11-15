@@ -764,23 +764,37 @@
             _this.formattedValue = _this.$el.querySelector('input').value;
           },
           'keyup': function keyup(event) {
-            var _stripCurrencySymbolA = stripCurrencySymbolAndMinusSign(_this.$el.querySelector('input').value, {
-              prefix: '',
-              suffix: ''
-            }),
-                value = _stripCurrencySymbolA.value,
-                negative = _stripCurrencySymbolA.negative;
+            if (event.key === '-' || event.key === '+') {
+              var _stripCurrencySymbolA = stripCurrencySymbolAndMinusSign(_this.$el.querySelector('input').value, {
+                prefix: '',
+                suffix: ''
+              }),
+                  value = _stripCurrencySymbolA.value,
+                  negative = _stripCurrencySymbolA.negative;
 
-            var numberValue = parse(value, _this.$el.querySelector('input').$ci.currencyFormat);
+              var numberParts = value.split(_this.$el.querySelector('input').$ci.currencyFormat.decimalSymbol);
+              var parsedValue = parse(value, _this.$el.querySelector('input').$ci.currencyFormat);
+              var stringValue = null;
 
-            if (event.key === '-' && !negative) {
-              _this.$el.querySelector('input').value = "-".concat(numberValue);
-              dispatchEvent(_this.$el.querySelector('input'), 'input');
-            }
+              if (numberParts.length === 2) {
+                var fraction = numberParts[1];
+                stringValue = new Intl.NumberFormat(_this.locale, {
+                  minimumFractionDigits: fraction.length,
+                  maximumFractionDigits: fraction.length
+                }).format(parsedValue);
+              }
 
-            if (event.key === '+') {
-              _this.$el.querySelector('input').value = "".concat(numberValue);
-              dispatchEvent(_this.$el.querySelector('input'), 'input');
+              var numberValue = stringValue || parsedValue;
+
+              if (event.key === '-' && !negative && numberValue !== null) {
+                _this.$el.querySelector('input').value = "-".concat(numberValue);
+                dispatchEvent(_this.$el.querySelector('input'), 'input');
+              }
+
+              if (event.key === '+' && negative && numberValue !== null) {
+                _this.$el.querySelector('input').value = "".concat(numberValue);
+                dispatchEvent(_this.$el.querySelector('input'), 'input');
+              }
             }
           }
         };
