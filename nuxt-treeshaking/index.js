@@ -1,6 +1,6 @@
 const { resolve } = require('path')
 
-module.exports = function nuxtVueCurrencyInput(options) {
+module.exports = function nuxtVCurrencyField(options) {
   this.addPlugin({
     src: resolve(__dirname, 'plugin.js'),
     fileName: 'v-currency-field.js',

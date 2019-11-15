@@ -5,7 +5,7 @@
    v-bind="attrs"
    v-on="listeners()"
    type="tel"
-   v-currency-directive="{currency, locale, distractionFree, decimalLength, autoDecimalMode, min, max}"/>
+   v-currency-directive="{currency, locale, distractionFree, decimalLength, autoDecimalMode: decimalMode, min, max}"/>
 </template>
 
 <script>
@@ -61,7 +61,18 @@ export default {
       return attrs;
     },
     distractionFree(){
-      return !this.autoDecimalMode;
+      if (this.decimalLength > 0) {
+        return !this.autoDecimalMode;
+      } else {
+        return false;
+      }
+    },
+    decimalMode(){
+      if (this.decimalLength > 0) {
+        return this.autoDecimalMode;
+      } else {
+        return false;
+      }
     }
   },
   methods: {

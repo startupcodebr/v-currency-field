@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.0.1 
+ * v-currency-field v3.0.3 
  * (c) 2019 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -734,7 +734,18 @@
         return attrs;
       },
       distractionFree: function distractionFree() {
-        return !this.autoDecimalMode;
+        if (this.decimalLength > 0) {
+          return !this.autoDecimalMode;
+        } else {
+          return false;
+        }
+      },
+      decimalMode: function decimalMode() {
+        if (this.decimalLength > 0) {
+          return this.autoDecimalMode;
+        } else {
+          return false;
+        }
       }
     },
     methods: {
@@ -891,7 +902,7 @@
   const __vue_script__ = script;
 
   /* template */
-  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-text-field',_vm._g(_vm._b({directives:[{name:"currency-directive",rawName:"v-currency-directive",value:({currency: _vm.currency, locale: _vm.locale, distractionFree: _vm.distractionFree, decimalLength: _vm.decimalLength, autoDecimalMode: _vm.autoDecimalMode, min: _vm.min, max: _vm.max}),expression:"{currency, locale, distractionFree, decimalLength, autoDecimalMode, min, max}"}],ref:"textfield",attrs:{"type":"tel"},model:{value:(_vm.formattedValue),callback:function ($$v) {_vm.formattedValue=$$v;},expression:"formattedValue"}},'v-text-field',_vm.attrs,false),_vm.listeners()))};
+  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-text-field',_vm._g(_vm._b({directives:[{name:"currency-directive",rawName:"v-currency-directive",value:({currency: _vm.currency, locale: _vm.locale, distractionFree: _vm.distractionFree, decimalLength: _vm.decimalLength, autoDecimalMode: _vm.decimalMode, min: _vm.min, max: _vm.max}),expression:"{currency, locale, distractionFree, decimalLength, autoDecimalMode: decimalMode, min, max}"}],ref:"textfield",attrs:{"type":"tel"},model:{value:(_vm.formattedValue),callback:function ($$v) {_vm.formattedValue=$$v;},expression:"formattedValue"}},'v-text-field',_vm.attrs,false),_vm.listeners()))};
   var __vue_staticRenderFns__ = [];
 
     /* style */
@@ -919,7 +930,7 @@
       undefined
     );
 
-  var version = '3.0.1';
+  var version = '3.0.3';
 
   function install(Vue, globalOptions) {
     if (globalOptions) {
