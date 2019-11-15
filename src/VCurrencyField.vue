@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       currency: null,
-      formattedValue: this.defaultValue,
+      formattedValue: this.value,
     };
   },
   computed: {

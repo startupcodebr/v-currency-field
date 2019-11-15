@@ -21,7 +21,7 @@
 export default {
   name: 'demo',
   data: () => ({
-  	value: 0
+  	value: 100
   })
 }
 </script>
