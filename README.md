@@ -124,9 +124,7 @@ plugins: [
           suffix: ' #',
           precision: 2,
           masked: false,
-          allowBlank: false,
-          min: Number.MIN_SAFE_INTEGER,
-          max: Number.MAX_SAFE_INTEGER
+          allowBlank: false
         }
       }
     }
