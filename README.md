@@ -5,11 +5,11 @@
 
 ## Compatibility
 
-| branch    | tag       | release |   |   Vuetify   |  Based On   |
-|:----------|-----------|--------:|:-:| :---------: | :---------: |
-| master    | latest    | 3.x.x   | → | 1.x & 2.x   | [vue currency input](https://dm4t2.github.io/vue-currency-input/)
-| 2.x       | 2.x       | 2.0.0   | → | 2.x         | [v-money](https://github.com/64robots/v-money)
-| 1.x       | 1.x       | 1.0.8   | → | 1.x         | [v-money](https://github.com/64robots/v-money)
+| branch    | tag         | release |   |   Vuetify   |  Based On   |
+|:----------|-------------|--------:|:-:| :---------: | :---------: |
+| master    | latest      | 3.x.x   | → | 1.x & 2.x   | [vue currency input](https://dm4t2.github.io/vue-currency-input/)
+| 2.x       | vuetify-2.x | 2.0.0   | → | 2.x         | [v-money](https://github.com/64robots/v-money)
+| 1.x       | vuetify-1.x | 1.0.8   | → | 1.x         | [v-money](https://github.com/64robots/v-money)
 
 ## Usage
 
