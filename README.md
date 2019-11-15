@@ -1,8 +1,15 @@
-# Currency Mask for Vuetify
+# Vuetify Currency Field (Version 1.x)
 
 ## Features
-- VERSION FOR VUETIFY 1.x
-- All features from v-money as v-text-field of vuetify 1.x
+- All features from v-money as v-text-field of vuetify.
+
+## Compatibility
+
+| branch    | tag       | release |   |   Vuetify   |  Based On   |
+|:----------|-----------|--------:|:-:| :---------: | :---------: |
+| master    | latest    | 3.x.x   | → | 1.x & 2.x   | [vue currency input](https://dm4t2.github.io/vue-currency-input/)
+| 2.x       | 2.x       | 2.0.0   | → | 1.x         | [v-money](https://github.com/64robots/v-money)
+| 1.x       | 1.x       | 1.0.8   | → | 1.x         | [v-money](https://github.com/64robots/v-money)
 
 ## Usage
 
@@ -39,9 +46,7 @@ Vue.use(currency)
           suffix: ' #',
           precision: 2,
           masked: false,
-          allowBlank: false,
-          min: Number.MIN_SAFE_INTEGER,
-          max: Number.MAX_SAFE_INTEGER
+          allowBlank: false
         }
       }
     }
@@ -62,8 +67,6 @@ All v-money properties
 | suffix     | false    | String  | ""                      | Percentage for example: " %"                            |
 | masked     | false    | Boolean | false                   | If the component output should include the mask or not  |
 | allowBlank | false    | Boolean | false                   | If the field can start blank and be cleared out by user |
-| min        | false    | Number  | Number.MIN_SAFE_INTEGER | The min value allowed                                   |
-| max        | false    | Number  | Number.MAX_SAFE_INTEGER | The max value allowed                                   |
 
 And all vuetify properties
 
