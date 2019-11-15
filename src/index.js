@@ -1,28 +1,27 @@
-import Money from './component'
-import VMoney from './directive'
-import options from './options'
-const VERSION = proccess.env.VERSION
+import VCurrencyField from './VCurrencyField.vue';
+import options from './options';
+
+const version = '__VERSION__'
 
 export {
-  Money,
-  VMoney,
+  VCurrencyField,
   options,
-  VERSION
-}
+  version,
+};
 
-function install (Vue, globalOptions) {
+function install(Vue, globalOptions) {
   if (globalOptions) {
-    Object.keys(globalOptions).map(function(key){
-      options[key] = globalOptions[key]
-    })
+    Object.keys(globalOptions).map((key) => {
+      options[key] = globalOptions[key];
+    });
   }
-  Vue.directive('currency', VMoney)
-  Vue.component('v-currency-field', Money)
+
+  Vue.component('v-currency-field', VCurrencyField);
 }
 
-export default install
+export default install;
 
 // Install by default if included from script tag
 if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(install)
+  window.Vue.use(install);
 }
