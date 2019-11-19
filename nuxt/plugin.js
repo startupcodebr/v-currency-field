@@ -1,4 +1,4 @@
 import Vue from 'vue';
-import VCurrencyField from 'currency-field';
+import VCurrencyField from 'v-currency-field';
 
 Vue.use(VCurrencyField, <%= serialize(options) %>);
