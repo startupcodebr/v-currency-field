@@ -6,7 +6,15 @@
 	  	<v-layout>
 	      <v-card>
 	    	<v-card-text>
-	    		<v-currency-field label="Solo" locale="pt-BR" :auto-decimal-mode="true" :decimal-length="2" :default-value="0" flat v-model="value"/>
+	    		<v-currency-field 
+	    		label="Solo" 
+	    		locale="pt-BR" 
+	    		:auto-decimal-mode="true" 
+	    		:decimal-length="2" 
+	    		:default-value="0" 
+	    		flat 
+	    		@click.prevent="event()" 
+	    		v-model="value"/>
 	    		{{ value }}
 	    	</v-card-text>
 	      </v-card>
@@ -21,7 +29,12 @@
 export default {
   name: 'demo',
   data: () => ({
-  	value: 1593
-  })
+  	value: 0
+  }),
+  methods: {
+		event () {
+			alert("event")
+		}
+	},
 }
 </script>
