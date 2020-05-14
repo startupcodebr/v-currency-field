@@ -5,12 +5,17 @@
    v-bind="attrs"
    v-on="listeners()"
    type="tel"
-   v-currency-directive="{currency, locale, distractionFree, decimalLength, autoDecimalMode: decimalMode, min, max}"/>
+   v-currency-directive="{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}">
+
+    <template v-for="(index, name) in $slots" v-slot:[name]>
+      <slot :name="name" />
+    </template>
+  </v-text-field>
 </template>
 
 <script>
 import dispatchEvent from 'vue-currency-input/src/utils/dispatchEvent';
-import { stripCurrencySymbolAndMinusSign } from 'vue-currency-input/src/utils/formatHelper'
+import { stripCurrencySymbolAndMinusSign, toInteger } from './formatHelper'
 import parse from 'vue-currency-input/src/utils/parse';
 import { CurrencyDirective } from 'vue-currency-input';
 import defaults from './options';
@@ -20,7 +25,7 @@ export default {
   props: {
     value: {
       type: [Number, String],
-      default: () => defaults.defaultValue,
+      default: () => null,
     },
     locale: {
       type: String,
@@ -46,6 +51,14 @@ export default {
       type: Number,
       default: () => defaults.defaultValue,
     },
+    valueAsInteger: {
+      type: Boolean,
+      default: () => defaults.valueAsInteger,
+    },
+    allowNegative: {
+      type: Boolean,
+      default: () => defaults.allowNegative,
+    }
   },
   directives: { CurrencyDirective },
   data() {
@@ -56,6 +69,7 @@ export default {
   },
   mounted() {
     this.$refs.textfield.resetValidation();
+    dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
   },
   computed: {
     attrs() {
@@ -63,24 +77,26 @@ export default {
       const { value, ...attrs } = this.$attrs; // all but input event
       return attrs;
     },
-    distractionFree(){
+    distractionFree() {
       if (this.decimalLength > 0) {
         return !this.autoDecimalMode;
       } else {
         return false;
       }
     },
-    decimalMode(){
+    decimalMode() {
       if (this.decimalLength > 0) {
         return this.autoDecimalMode;
       } else {
         return false;
       }
-    }
-  },
-  watch: {
-    value (value) {
-      dispatchEvent(this.$el.querySelector('input'), 'format', { value })
+    },
+    valueRange() {
+      if (this.min || this.max) {
+        return {min: this.min, max: this.max};
+      } else {
+        return undefined;
+      }
     }
   },
   methods: {
@@ -89,13 +105,27 @@ export default {
       const { input, ...listeners } = this.$listeners; // all but input event
       return {
         ...listeners,
-        'format-complete': ({ detail }) => {
-          if (detail.numberValue === null && this.defaultValue !== null && this.$el.querySelector('input').$ci.focus === false) {
-            detail.numberValue = this.defaultValue;
-            dispatchEvent(this.$el.querySelector('input'), 'format', { value:  this.defaultValue})
+        defaultValue: e => {
+          let input = this.$el.querySelector('input');
+
+          if (!this.value && this.defaultValue !== null && !input.$ci.focus) {
+            input.$ci.numberValue = this.valueAsInteger && this.defaultValue ? this.defaultValue * Math.pow(10, this.decimalLength) : this.defaultValue;
+            dispatchEvent(input, 'blur');
           }
-          this.$emit('input', detail.numberValue);
-          this.formattedValue = this.$el.querySelector('input').value;
+        },
+        input: e => {
+          let input = this.$el.querySelector('input');
+
+          if (!input.$ci.numberValue && this.defaultValue !== null && !input.$ci.focus) {
+            input.$ci.numberValue = this.defaultValue;
+            dispatchEvent(input, 'blur');
+          }
+
+          if (input.$ci && this.value !== input.$ci.numberValue) {
+            this.$emit('input', toInteger(input.$ci.numberValue, this.valueAsInteger, this.decimalLength))
+          }
+          
+          this.formattedValue = input.value
         },
         'keyup': (event) => {
           if (event.key === '-' || event.key === '+') {

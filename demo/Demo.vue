@@ -11,10 +11,19 @@
 	    		locale="pt-BR" 
 	    		:auto-decimal-mode="true" 
 	    		:decimal-length="2" 
-	    		:default-value="0" 
+	    		:default-value="50" 
+	    		:max="100"
+	    		:value-as-integer="true"
+	    		:allow-negative="false"
 	    		flat 
 	    		@click.prevent="event()" 
-	    		v-model="value"/>
+	    		v-model="value">
+
+		    		<template v-slot:append>
+		              $$
+		            </template>
+
+	            </v-currency-field>
 	    		{{ value }}
 	    	</v-card-text>
 	      </v-card>
@@ -29,11 +38,11 @@
 export default {
   name: 'demo',
   data: () => ({
-  	value: 0
+  	value: 800
   }),
   methods: {
 		event () {
-			alert("event")
+			//alert("event")
 		}
 	},
 }

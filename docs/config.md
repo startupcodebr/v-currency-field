@@ -21,6 +21,8 @@ Name | Type | Description
 `min` | Number | Minimum value. Default is `null` (no limitation). Must be less than `max`.
 `max` | Number | Maximum value. Default is `null` (no limitation). Must be greater than `min`.
 `default-value` | Number | Set a default value to field. Default is `0`. Can be setted to `null` to accept blank value.
+`allow-negative` | Boolean | Whether the input of negative values is allowed. Default is `true`. If `false` it prevents the user to press <kbd>-</kbd>.
+`value-as-integer` | Boolean | Whether the number value should be handled as integer instead of float value. Default is `false`.
 
 ## Plugin options
 To customize the plugin installation you can optionally pass an `options` object to `Vue.use()`:
@@ -31,6 +33,8 @@ Vue.use(VCurrencyField, {
 	autoDecimalMode: true,
 	min: null,
 	max: null,
-	defaultValue: 0
+	defaultValue: 0,
+    valueAsInteger: false,
+    allowNegative: true
 })
 ```
