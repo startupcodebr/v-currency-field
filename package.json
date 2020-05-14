@@ -24,7 +24,7 @@
     "docs": "npm run docs:serve",
     "docs:build": "vue-cli-service docs --mode build",
     "docs:serve": "vue-cli-service docs --mode serve",
-    "prepublish": "vue-cli-service lint && vue-cli-service docs --mode build && vue-cli-service build",
+    "prepublish": "vue-cli-service lint && NODE_ENV=production vue-cli-service docs --mode build && vue-cli-service build",
     "start": "vue-cli-service serve"
   },
   "main": "dist/v-currency-field.common.js",

@@ -105,7 +105,7 @@ export default {
       const { input, ...listeners } = this.$listeners; // all but input event
       return {
         ...listeners,
-        defaultValue: e => {
+        defaultValue: () => {
           let input = this.$el.querySelector('input');
 
           if (!this.value && this.defaultValue !== null && !input.$ci.focus) {
@@ -113,7 +113,7 @@ export default {
             dispatchEvent(input, 'blur');
           }
         },
-        input: e => {
+        input: () => {
           let input = this.$el.querySelector('input');
 
           if (!input.$ci.numberValue && this.defaultValue !== null && !input.$ci.focus) {
