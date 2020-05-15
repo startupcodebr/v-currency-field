@@ -11,7 +11,7 @@
 	    		locale="pt-BR" 
 	    		:auto-decimal-mode="true" 
 	    		:decimal-length="2" 
-	    		:default-value="null" 
+	    		:default-value="50" 
 	    		:value-as-integer="false"
 	    		:allow-negative="false"
 	    		flat 

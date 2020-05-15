@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.0.8 
+ * v-currency-field v3.0.9 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -944,8 +944,8 @@ var options = {
   locale: undefined,
   decimalLength: 2,
   autoDecimalMode: true,
-  min: undefined,
-  max: undefined,
+  min: null,
+  max: null,
   defaultValue: 0,
   valueAsInteger: false,
   allowNegative: true
@@ -1021,6 +1021,10 @@ var script = {
   mounted: function mounted() {
     this.$refs.textfield.resetValidation();
     dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
+    this.formattedValue = typeof this.value === 'number' ? this.value.toLocaleString(this.locale, {
+      minimumFractionDigits: this.decimalLength,
+      maximumFractionDigits: this.decimalLength
+    }) : null;
   },
   computed: {
     attrs: function attrs() {
@@ -1071,7 +1075,7 @@ var script = {
         defaultValue: function defaultValue() {
           var input = _this.$el.querySelector('input');
 
-          if (!_this.value && _this.defaultValue !== null && !input.$ci.focus) {
+          if (!_this.value && _this.defaultValue !== null && _this.defaultValue !== undefined && !input.$ci.focus) {
             input.$ci.numberValue = _this.valueAsInteger && _this.defaultValue ? _this.defaultValue * Math.pow(10, _this.decimalLength) : _this.defaultValue;
             dispatchEvent(input, 'blur');
           }
@@ -1079,7 +1083,7 @@ var script = {
         input: function input() {
           var input = _this.$el.querySelector('input');
 
-          if (!input.$ci.numberValue && _this.defaultValue !== null && !input.$ci.focus) {
+          if ((input.$ci.numberValue == null || input.$ci.numberValue == undefined) && _this.defaultValue !== null && !input.$ci.focus) {
             input.$ci.numberValue = _this.defaultValue;
             dispatchEvent(input, 'blur');
           }
@@ -1246,7 +1250,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-var version = '3.0.8';
+var version = '3.0.9';
 
 function install(Vue, globalOptions) {
   if (globalOptions) {

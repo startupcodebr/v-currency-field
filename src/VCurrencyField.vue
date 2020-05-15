@@ -109,7 +109,7 @@ export default {
         defaultValue: () => {
           let input = this.$el.querySelector('input');
 
-          if (!this.value && this.defaultValue !== null && !input.$ci.focus) {
+          if (!this.value && this.defaultValue !== null && this.defaultValue !== undefined && !input.$ci.focus) {
             input.$ci.numberValue = this.valueAsInteger && this.defaultValue ? this.defaultValue * Math.pow(10, this.decimalLength) : this.defaultValue;
             dispatchEvent(input, 'blur');
           }
