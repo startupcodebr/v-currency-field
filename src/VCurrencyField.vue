@@ -70,6 +70,7 @@ export default {
   mounted() {
     this.$refs.textfield.resetValidation();
     dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
+    this.formattedValue = typeof this.value === 'number' ? this.value.toLocaleString(this.locale, { minimumFractionDigits: this.decimalLength, maximumFractionDigits: this.decimalLength }) : null
   },
   computed: {
     attrs() {
@@ -116,7 +117,7 @@ export default {
         input: () => {
           let input = this.$el.querySelector('input');
 
-          if (!input.$ci.numberValue && this.defaultValue !== null && !input.$ci.focus) {
+          if ((input.$ci.numberValue == null || input.$ci.numberValue == undefined)  && this.defaultValue !== null && !input.$ci.focus) {
             input.$ci.numberValue = this.defaultValue;
             dispatchEvent(input, 'blur');
           }

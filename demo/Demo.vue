@@ -11,9 +11,8 @@
 	    		locale="pt-BR" 
 	    		:auto-decimal-mode="true" 
 	    		:decimal-length="2" 
-	    		:default-value="50" 
-	    		:max="100"
-	    		:value-as-integer="true"
+	    		:default-value="null" 
+	    		:value-as-integer="false"
 	    		:allow-negative="false"
 	    		flat 
 	    		@click.prevent="event()" 
@@ -38,7 +37,7 @@
 export default {
   name: 'demo',
   data: () => ({
-  	value: 800
+  	value: 9.16
   }),
   methods: {
 		event () {

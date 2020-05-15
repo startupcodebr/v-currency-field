@@ -9,5 +9,7 @@ Vue.use(VCurrencyField, {
 	autoDecimalMode: true,
 	min: null,
 	max: null,
-	defaultValue: 0
+	defaultValue: 0,
+    valueAsInteger: false,
+    allowNegative: true
 })
