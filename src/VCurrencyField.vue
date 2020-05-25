@@ -31,6 +31,10 @@ export default {
       type: String,
       default: () => defaults.locale,
     },
+    currrency: {
+      type: [String, Object],
+      default: () => defaults.currrency,
+    },
     decimalLength: {
       type: Number,
       default: () => defaults.decimalLength,
@@ -63,7 +67,6 @@ export default {
   directives: { CurrencyDirective },
   data() {
     return {
-      currency: null,
       formattedValue: this.value,
     };
   },
