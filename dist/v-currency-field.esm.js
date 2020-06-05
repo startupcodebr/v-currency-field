@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.0.9 
+ * v-currency-field v3.0.10 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -936,6 +936,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 var options = {
   locale: undefined,
+  currency: undefined,
   decimalLength: 2,
   autoDecimalMode: true,
   min: null,
@@ -958,6 +959,12 @@ var script = {
       type: String,
       default: function _default() {
         return options.locale;
+      }
+    },
+    currency: {
+      type: [String, Object],
+      default: function _default() {
+        return options.currency;
       }
     },
     decimalLength: {
@@ -1008,17 +1015,18 @@ var script = {
   },
   data: function data() {
     return {
-      currency: null,
       formattedValue: this.value
     };
   },
   mounted: function mounted() {
     this.$refs.textfield.resetValidation();
     dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
-    this.formattedValue = typeof this.value === 'number' ? this.value.toLocaleString(this.locale, {
-      minimumFractionDigits: this.decimalLength,
-      maximumFractionDigits: this.decimalLength
-    }) : null;
+
+    if (!this.valueAsInteger) {
+      dispatchEvent(this.$el.querySelector('input'), 'format', {
+        value: this.value
+      });
+    }
   },
   computed: {
     attrs: function attrs() {
@@ -1055,6 +1063,13 @@ var script = {
       }
     }
   },
+  watch: {
+    value: function value(_value) {
+      dispatchEvent(this.$el.querySelector('input'), 'format', {
+        value: _value
+      });
+    }
+  },
   methods: {
     listeners: function listeners() {
       var _this = this;
@@ -1082,9 +1097,7 @@ var script = {
             dispatchEvent(input, 'blur');
           }
 
-          if (input.$ci && _this.value !== input.$ci.numberValue) {
-            _this.$emit('input', toInteger(input.$ci.numberValue, _this.valueAsInteger, _this.decimalLength));
-          }
+          _this.$emit('input', toInteger(input.$ci.numberValue, _this.valueAsInteger, _this.decimalLength));
 
           _this.formattedValue = input.value;
         },
@@ -1244,7 +1257,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-var version = '3.0.9';
+var version = '3.0.10';
 
 function install(Vue, globalOptions) {
   if (globalOptions) {
