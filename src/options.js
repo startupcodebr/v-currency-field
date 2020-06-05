@@ -1,5 +1,6 @@
 export default {
   locale: undefined,
+  currency: undefined,
   decimalLength: 2,
   autoDecimalMode: true,
   min: null,

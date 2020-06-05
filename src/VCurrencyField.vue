@@ -31,9 +31,9 @@ export default {
       type: String,
       default: () => defaults.locale,
     },
-    currrency: {
+    currency: {
       type: [String, Object],
-      default: () => defaults.currrency,
+      default: () => defaults.currency,
     },
     decimalLength: {
       type: Number,
@@ -73,7 +73,10 @@ export default {
   mounted() {
     this.$refs.textfield.resetValidation();
     dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
-    this.formattedValue = typeof this.value === 'number' ? this.value.toLocaleString(this.locale, { minimumFractionDigits: this.decimalLength, maximumFractionDigits: this.decimalLength }) : null
+    
+    if (!this.valueAsInteger) {
+      dispatchEvent(this.$el.querySelector('input'), 'format', { value: this.value })
+    }
   },
   computed: {
     attrs() {
@@ -103,6 +106,11 @@ export default {
       }
     }
   },
+  watch: {
+    value (value) {
+      dispatchEvent(this.$el.querySelector('input'), 'format', { value })
+    }
+  },
   methods: {
     listeners() {
       // eslint-disable-next-line
@@ -125,9 +133,7 @@ export default {
             dispatchEvent(input, 'blur');
           }
 
-          if (input.$ci && this.value !== input.$ci.numberValue) {
-            this.$emit('input', toInteger(input.$ci.numberValue, this.valueAsInteger, this.decimalLength))
-          }
+          this.$emit('input', toInteger(input.$ci.numberValue, this.valueAsInteger, this.decimalLength))
           
           this.formattedValue = input.value
         },

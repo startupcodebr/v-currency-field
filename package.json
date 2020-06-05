@@ -1,6 +1,6 @@
 {
   "name": "v-currency-field",
-  "version": "3.0.9",
+  "version": "3.0.10",
   "description": "Currency component for vuetify v-text-field",
   "author": "Philipe Augusto <phiny1@gmail.com>",
   "license": "MIT",

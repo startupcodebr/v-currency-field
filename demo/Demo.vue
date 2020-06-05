@@ -12,10 +12,9 @@
 	    		:auto-decimal-mode="true" 
 	    		:decimal-length="2" 
 	    		:default-value="50" 
-	    		:value-as-integer="false"
+	    		:value-as-integer="true"
 	    		:allow-negative="false"
 	    		flat 
-	    		@click.prevent="event()" 
 	    		v-model="value">
 
 		    		<template v-slot:append>
@@ -25,6 +24,14 @@
 	            </v-currency-field>
 	    		{{ value }}
 	    	</v-card-text>
+
+	    	<v-card-actions>
+		    	<v-btn 
+		            small
+		            class="mr-4 white--text"
+		            @click.prevent="changeValue()"
+		            color="green darken-3">Change Value</v-btn> 
+		    </v-card-actions>
 	      </v-card>
 		</v-layout>
 	  </v-content>
@@ -37,11 +44,11 @@
 export default {
   name: 'demo',
   data: () => ({
-  	value: 9.16
+  	value: 9716
   }),
   methods: {
-		event () {
-			//alert("event")
+		changeValue () {
+			this.value = 117;
 		}
 	},
 }
