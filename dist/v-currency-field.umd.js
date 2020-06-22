@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.0.10 
+ * v-currency-field v3.0.11 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -974,7 +974,7 @@
         }
       },
       decimalLength: {
-        type: Number,
+        type: [Number, Object],
         default: function _default() {
           return options.decimalLength;
         }
@@ -1263,7 +1263,7 @@
       undefined
     );
 
-  var version = '3.0.10';
+  var version = '3.0.11';
 
   function install(Vue, globalOptions) {
     if (globalOptions) {

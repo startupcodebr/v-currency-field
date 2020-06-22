@@ -36,7 +36,7 @@ export default {
       default: () => defaults.currency,
     },
     decimalLength: {
-      type: Number,
+      type: [Number, Object],
       default: () => defaults.decimalLength,
     },
     autoDecimalMode: {

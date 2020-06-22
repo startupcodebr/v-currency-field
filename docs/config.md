@@ -17,7 +17,7 @@ Name | Type | Description
 `suffix` | String | `v-text-field` suffix that could be currency code (for example `USD`).
 `locale` | String | A [BCP 47](https://tools.ietf.org/html/bcp47) language tag (for example `en` or `pt-BR`). The locale define grouping symbol (`decimal` and `thousands`).  Default is `undefined` (use the runtime's default locale).
 `auto-decimal-mode` | Boolean | When `true` leave the formatted value untouched on focus. When `false` negligible decimal digits and the grouping symbol on focus. Default is `true`.
-`decimal-length` | Number | The number of displayed decimal digits. Default is `2`. Must be between 0 and 20.
+`decimal-length` | Number or Object | The number of displayed decimal digits. Default is `2`. Must be between 0 and 20. You can also pass an object {min, max} to use a decimal range (ranges are not available when using `auto-decimal-mode` or `value-as-integer`).
 `min` | Number | Minimum value. Default is `null` (no limitation). Must be less than `max`.
 `max` | Number | Maximum value. Default is `null` (no limitation). Must be greater than `min`.
 `default-value` | Number | Set a default value to field. Default is `0`. Can be setted to `null` to accept blank value.
