@@ -4,7 +4,6 @@
    v-model="formattedValue"
    v-bind="attrs"
    v-on="listeners()"
-   type="tel"
    v-currency-directive="{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}">
 
     <template v-for="(index, name) in $slots" v-slot:[name]>
@@ -14,9 +13,7 @@
 </template>
 
 <script>
-import dispatchEvent from 'vue-currency-input/src/utils/dispatchEvent';
-import { stripCurrencySymbolAndMinusSign, toInteger } from './formatHelper'
-import parse from 'vue-currency-input/src/utils/parse';
+import { setValue } from 'vue-currency-input/src/api'
 import { CurrencyDirective } from 'vue-currency-input';
 import defaults from './options';
 
@@ -25,7 +22,7 @@ export default {
   props: {
     value: {
       type: [Number, String],
-      default: () => null,
+      default: () => 0,
     },
     locale: {
       type: String,
@@ -71,12 +68,7 @@ export default {
     };
   },
   mounted() {
-    this.$refs.textfield.resetValidation();
-    dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
-    
-    if (!this.valueAsInteger) {
-      dispatchEvent(this.$el.querySelector('input'), 'format', { value: this.value })
-    }
+    this.addListeners(this.$el.querySelector('input'));
   },
   computed: {
     attrs() {
@@ -107,56 +99,48 @@ export default {
     }
   },
   watch: {
-    value (value) {
-      dispatchEvent(this.$el.querySelector('input'), 'format', { value })
-    }
+    value: 'setValue'
   },
   methods: {
+    addListeners(el) {
+      el.addEventListener('change', e => {
+        if (e.detail) {
+          this.$emit('change', e.detail.numberValue)
+        }
+
+        if (this.value == null && this.value == undefined && this.defaultValue !== null && this.defaultValue !== undefined) {
+          this.setValue(this.valueAsInteger && this.defaultValue ? this.defaultValue * Math.pow(10, this.decimalLength) : this.defaultValue)
+        }
+      }, { capture: true })
+
+      el.addEventListener('input', e => {
+        if (e.detail && this.value !== e.detail.numberValue) {
+          this.$emit('input', e.detail.numberValue)
+        }
+      }, { capture: true })
+    },
+    setValue (value) {
+      let input = this.$el.querySelector('input')
+      setValue(input, value)
+    },
     listeners() {
       // eslint-disable-next-line
       const { input, ...listeners } = this.$listeners; // all but input event
       return {
         ...listeners,
-        defaultValue: () => {
-          let input = this.$el.querySelector('input');
-
-          if (!this.value && this.defaultValue !== null && this.defaultValue !== undefined && !input.$ci.focus) {
-            input.$ci.numberValue = this.valueAsInteger && this.defaultValue ? this.defaultValue * Math.pow(10, this.decimalLength) : this.defaultValue;
-            dispatchEvent(input, 'blur');
+        input: (value) => {
+          if (this.$refs.textfield.isResetting) {
+            this.setValue(this.valueAsInteger && this.defaultValue ? this.defaultValue * Math.pow(10, this.decimalLength) : this.defaultValue)
           }
-        },
-        input: () => {
-          let input = this.$el.querySelector('input');
-
-          if ((input.$ci.numberValue == null || input.$ci.numberValue == undefined)  && this.defaultValue !== null && !input.$ci.focus) {
-            input.$ci.numberValue = this.defaultValue;
-            dispatchEvent(input, 'blur');
-          }
-
-          this.$emit('input', toInteger(input.$ci.numberValue, this.valueAsInteger, this.decimalLength))
-          
-          this.formattedValue = input.value
         },
         'keyup': (event) => {
           if (event.key === '-' || event.key === '+') {
-            let { value, negative } = stripCurrencySymbolAndMinusSign(this.$el.querySelector('input').value, {prefix: '', suffix: ''})
-            const numberParts = value.split(this.$el.querySelector('input').$ci.currencyFormat.decimalSymbol)
-            let parsedValue = parse(value, this.$el.querySelector('input').$ci.currencyFormat)
-            let stringValue = null
-            if (numberParts.length === 2) {
-              const fraction = numberParts[1]
-              stringValue = new Intl.NumberFormat(this.locale, { minimumFractionDigits: fraction.length, maximumFractionDigits: fraction.length }).format(parsedValue)
+            if (event.key === '-' && this.value >= 0) {
+              this.setValue(this.value * -1)
             }
             
-            let numberValue = stringValue || parsedValue
-            if (event.key === '-' && !negative && numberValue !== null) {
-              this.$el.querySelector('input').value = `-${numberValue}`
-              dispatchEvent(this.$el.querySelector('input'), 'input')
-            }
-            
-            if (event.key === '+' && negative && numberValue !== null) {
-              this.$el.querySelector('input').value = `${numberValue}`
-              dispatchEvent(this.$el.querySelector('input'), 'input')
+            if (event.key === '+' && this.value <= 0) {
+              this.setValue(this.value * -1)
             }
           }
         }

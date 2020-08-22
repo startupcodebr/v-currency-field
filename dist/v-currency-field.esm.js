@@ -3,7 +3,7 @@
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
-import Vue from 'vue';
+import parse from 'vue-currency-input/src/utils/parse';
 
 function _typeof(obj) {
   "@babel/helpers - typeof";
@@ -135,263 +135,174 @@ var toInteger = function toInteger(number, valueAsInteger, fractionDigits) {
   return valueAsInteger && number != null ? Number(number.toFixed(fractionDigits).split('.').join('')) : number;
 };
 
-var toInteger$1 = function toInteger(number, valueAsInteger, fractionDigits) {
-  return valueAsInteger && number != null ? Number(number.toFixed(fractionDigits).split('.').join('')) : number;
-};
-
-var stripCurrencySymbol = function stripCurrencySymbol(str, _ref) {
-  var prefix = _ref.prefix,
-      suffix = _ref.suffix;
-
-  if (prefix) {
-    str = str.replace(prefix, '').replace(prefix.trim(), '');
-  }
-
-  if (suffix) {
-    str = str.replace(suffix, '').replace(suffix.trim(), '');
-  }
-
-  return str.trim();
-};
-var normalizeMinusSymbol = function normalizeMinusSymbol(str) {
-  return str.replace(new RegExp("^".concat(['−', '-', '‐'].join('|')), 'g'), '-');
-};
-var isNumber = function isNumber(str) {
-  return normalizeMinusSymbol(str).match(new RegExp("^-?\\d+(\\.\\d+)?$"));
-};
-var normalizeDigits = function normalizeDigits(str, digits) {
-  digits.forEach(function (digit, index) {
-    str = str.replace(new RegExp(digit, 'g'), index);
-  });
-  return str;
-};
-
-var parse = (function (str, currencyFormat) {
-  var valueAsInteger = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  if (typeof str === 'string') {
-    str = normalizeDigits(str, currencyFormat.digits);
-    var value = stripCurrencySymbol(str, currencyFormat);
-    var numberParts = value.split(currencyFormat.decimalSymbol);
-
-    if (numberParts.length > 2) {
-      return null;
-    }
-
-    var integer = numberParts[0].replace(new RegExp("\\".concat(currencyFormat.groupingSymbol), 'g'), '');
-
-    if (!isNumber(integer)) {
-      return null;
-    }
-
-    var number = integer;
-
-    if (numberParts.length === 2) {
-      var fraction = numberParts[1];
-
-      if (fraction.length && !fraction.match(/^\d+$/g)) {
-        return null;
-      }
-
-      number += ".".concat(fraction);
-    }
-
-    return toInteger$1(Number(normalizeMinusSymbol(number)), valueAsInteger, currencyFormat.minimumFractionDigits);
-  }
-
-  return null;
-});
-
-var formatToParts = function formatToParts(number, numberFormat) {
-  var parts = numberFormat.formatToParts(number);
-  var types = parts.map(function (p) {
-    return p.type;
-  });
-  var digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (i) {
-    return i.toLocaleString(numberFormat.resolvedOptions().locale);
-  });
-  var prefix = parts.slice(0, types.indexOf('integer')).map(function (p) {
-    return p.value;
-  }).join('');
-  var suffix = parts.slice(Math.max(types.lastIndexOf('integer'), types.indexOf('fraction')) + 1).map(function (p) {
-    return p.value;
-  }).join('');
-  var groupingSymbol = types.indexOf('group') !== -1 ? parts[types.indexOf('group')].value : undefined;
-  var decimalSymbol = types.indexOf('decimal') !== -1 ? parts[types.indexOf('decimal')].value : undefined;
-  var minusSymbol = types.indexOf('minusSign') !== -1 ? parts[types.indexOf('minusSign')].value : undefined;
-  return {
-    digits: digits,
-    prefix: prefix,
-    suffix: suffix,
-    groupingSymbol: groupingSymbol,
-    decimalSymbol: decimalSymbol,
-    minusSymbol: minusSymbol
-  };
-};
-
-function createCurrencyFormat(ref) {
-  var locale = ref.locale;
-  var currency = ref.currency;
-  var precision = ref.precision;
-  var autoDecimalMode = ref.autoDecimalMode;
-  var valueAsInteger = ref.valueAsInteger;
-  var options = typeof currency === 'string' ? {
-    currency: currency,
-    style: 'currency'
-  } : {
-    minimumFractionDigits: 1
-  };
-  var numberFormat = new Intl.NumberFormat(locale, options);
-  var ref$1 = formatToParts(-1, numberFormat);
-  var minusSymbol = ref$1.minusSymbol;
-  var negativePrefix = ref$1.prefix;
-  var currencyFormat = Object.assign({}, formatToParts(123456, numberFormat), {
-    minusSymbol: minusSymbol,
-    negativePrefix: negativePrefix
-  });
-  var minimumFractionDigits = 2;
-  var maximumFractionDigits = 2;
-
-  if (currencyFormat.decimalSymbol === undefined) {
-    minimumFractionDigits = maximumFractionDigits = 0;
-  } else if (typeof precision === 'number') {
-    minimumFractionDigits = maximumFractionDigits = precision;
-  } else if (_typeof(precision) === 'object' && !autoDecimalMode && !valueAsInteger) {
-    minimumFractionDigits = precision.min || 0;
-    maximumFractionDigits = precision.max !== undefined ? precision.max : 20;
-  } else if (typeof currency === 'string') {
-    minimumFractionDigits = numberFormat.resolvedOptions().minimumFractionDigits;
-    maximumFractionDigits = numberFormat.resolvedOptions().maximumFractionDigits;
-  }
-
-  if (currency != null && _typeof(currency) === 'object') {
-    currencyFormat.prefix = currency.prefix || '';
-    currencyFormat.negativePrefix = "" + currencyFormat.minusSymbol + (currency.prefix || '');
-    currencyFormat.suffix = currency.suffix || '';
-  }
-
-  return Object.assign({}, currencyFormat, {
-    minimumFractionDigits: minimumFractionDigits,
-    maximumFractionDigits: maximumFractionDigits
-  });
+/**
+ * Vue Currency Input 1.20.2
+ * (c) 2018-2020 Matthias Stiller
+ * @license MIT
+ */
+function dispatchEvent$1(el, eventName, data) {
+  var event = document.createEvent('CustomEvent');
+  event.initCustomEvent(eventName, true, true, data);
+  el.dispatchEvent(event);
 }
 
-var toInteger$2 = function toInteger(number, valueAsInteger, fractionDigits) {
+var toExternalNumberModel = function toExternalNumberModel(number, valueAsInteger, fractionDigits) {
   return valueAsInteger && number != null ? Number(number.toFixed(fractionDigits).split('.').join('')) : number;
 };
 
-var toFloat = function toFloat(number, valueAsInteger, fractionDigits) {
-  return valueAsInteger && number != null ? number / Math.pow(10, fractionDigits) : number;
+var escapeRegExp = function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 var removeLeadingZeros = function removeLeadingZeros(str) {
   return str.replace(/^0+(0$|[^0])/, '$1');
 };
 
-var onlyDigits = function onlyDigits(str, digits) {
-  return normalizeDigits$1(str, digits).replace(/\D+/g, '');
-};
-
 var count = function count(str, search) {
-  return (str.match(new RegExp("\\" + search, 'g')) || []).length;
-};
-
-var endsWith = function endsWith(str, search) {
-  return str.substring(str.length - search.length, str.length) === search;
+  return (str.match(new RegExp(escapeRegExp(search), 'g')) || []).length;
 };
 
 var startsWith$1 = function startsWith(str, search) {
   return str.substring(0, search.length) === search;
 };
 
-var insertCurrencySymbol = function insertCurrencySymbol(value, currencyFormat, negative, hideCurrencySymbol) {
-  var prefix = currencyFormat.prefix;
-  var negativePrefix = currencyFormat.negativePrefix;
-  var suffix = currencyFormat.suffix;
+var substringBefore = function substringBefore(str, search) {
+  return str.substring(0, str.indexOf(search));
+};
 
-  if (hideCurrencySymbol) {
-    prefix = suffix = '';
-    negativePrefix = currencyFormat.minusSymbol;
+var DECIMAL_SYMBOLS = [',', '.', '٫'];
+
+var NumberFormat = function NumberFormat(options) {
+  var currency = options.currency;
+  var locale = options.locale;
+  var precision = options.precision;
+  var autoDecimalMode = options.autoDecimalMode;
+  var valueAsInteger = options.valueAsInteger;
+  var numberFormat = new Intl.NumberFormat(locale, typeof currency === 'string' ? {
+    currency: currency,
+    style: 'currency'
+  } : {
+    minimumFractionDigits: 1
+  });
+  var ps = numberFormat.format(123456);
+  this.locale = locale;
+  this.currency = currency;
+  this.digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (i) {
+    return i.toLocaleString(locale);
+  });
+  this.decimalSymbol = count(ps, this.digits[0]) ? ps.substr(ps.indexOf(this.digits[6]) + 1, 1) : undefined;
+  this.groupingSymbol = ps.substr(ps.indexOf(this.digits[3]) + 1, 1);
+  this.minusSymbol = substringBefore(Number(-1).toLocaleString(locale), this.digits[1]);
+
+  if (this.decimalSymbol === undefined) {
+    this.minimumFractionDigits = this.maximumFractionDigits = 0;
+  } else if (typeof precision === 'number') {
+    this.minimumFractionDigits = this.maximumFractionDigits = precision;
+  } else if (_typeof(precision) === 'object' && !autoDecimalMode && !valueAsInteger) {
+    this.minimumFractionDigits = precision.min || 0;
+    this.maximumFractionDigits = precision.max !== undefined ? precision.max : 20;
+  } else if (typeof currency === 'string') {
+    this.minimumFractionDigits = numberFormat.resolvedOptions().minimumFractionDigits;
+    this.maximumFractionDigits = numberFormat.resolvedOptions().maximumFractionDigits;
+  } else {
+    this.minimumFractionDigits = this.maximumFractionDigits = 2;
   }
 
-  return "" + (negative ? negativePrefix : prefix) + value + suffix;
+  if (typeof currency === 'string') {
+    this.prefix = substringBefore(ps, this.digits[1]);
+    this.negativePrefix = substringBefore(numberFormat.format(-1), this.digits[1]);
+    this.suffix = ps.substring(ps.lastIndexOf(this.decimalSymbol ? this.digits[0] : this.digits[6]) + 1);
+  } else {
+    this.prefix = (currency || {}).prefix || '';
+    this.negativePrefix = "" + this.minusSymbol + this.prefix;
+    this.suffix = (currency || {}).suffix || '';
+  }
 };
 
-var stripCurrencySymbol$1 = function stripCurrencySymbol(str, ref) {
-  var prefix = ref.prefix;
-  var suffix = ref.suffix;
+NumberFormat.prototype.parse = function parse(str) {
+  var negative = this.isNegative(str);
+  str = this.normalizeDigits(str);
+  str = this.stripCurrencySymbol(str);
+  str = this.stripMinusSymbol(str);
+  var fraction = this.decimalSymbol ? "(" + escapeRegExp(this.decimalSymbol) + "\\d*)?" : '';
+  var match = str.match(new RegExp("^" + this.integerPattern() + fraction + "$"));
 
-  if (prefix) {
-    str = str.replace(prefix, '').replace(prefix.trim(), '');
+  if (match) {
+    return Number("" + (negative ? '-' : '') + this.onlyDigits(match[1]) + "." + this.onlyDigits(match[3] || ''));
   }
 
-  if (suffix) {
-    str = str.replace(suffix, '').replace(suffix.trim(), '');
+  return null;
+};
+
+NumberFormat.prototype.format = function format(number, options) {
+  if (options === void 0) options = {
+    minimumFractionDigits: this.minimumFractionDigits,
+    maximumFractionDigits: this.maximumFractionDigits
+  };
+
+  if (typeof this.currency === 'string') {
+    return number.toLocaleString(this.locale, Object.assign({}, {
+      style: 'currency',
+      currency: this.currency
+    }, options));
+  } else {
+    return this.insertCurrencySymbol(Math.abs(number).toLocaleString(this.locale, options), number < 0 || number === 0 && 1 / number < 0);
   }
-
-  return str.trim();
 };
 
-var normalizeMinusSymbol$1 = function normalizeMinusSymbol(str) {
-  return str.replace(new RegExp("^" + ['−', '-', '‐'].join('|'), 'g'), '-');
+NumberFormat.prototype.integerPattern = function integerPattern() {
+  return "(0|[1-9]\\d{0,2}(" + escapeRegExp(this.groupingSymbol) + "?\\d{3})*)";
 };
 
-var isNegative = function isNegative(str) {
-  return normalizeMinusSymbol$1(str).charAt(0) === '-';
+NumberFormat.prototype.toFraction = function toFraction(str) {
+  return "" + this.digits[0] + this.decimalSymbol + this.onlyLocaleDigits(str.substr(1)).substr(0, this.maximumFractionDigits);
 };
 
-var isNumber$1 = function isNumber(str) {
-  return normalizeMinusSymbol$1(str).match(new RegExp("^-?\\d+(\\.\\d+)?$"));
+NumberFormat.prototype.isFractionIncomplete = function isFractionIncomplete(str) {
+  return !!this.normalizeDigits(str).match(new RegExp("^" + this.integerPattern() + escapeRegExp(this.decimalSymbol) + "$"));
 };
 
-var normalizeDigits$1 = function normalizeDigits(str, digits) {
-  digits.forEach(function (digit, index) {
-    str = str.replace(new RegExp(digit, 'g'), index);
+NumberFormat.prototype.isNegative = function isNegative(str) {
+  return startsWith$1(str, this.negativePrefix) || startsWith$1(str.replace('-', this.minusSymbol), this.minusSymbol);
+};
+
+NumberFormat.prototype.insertCurrencySymbol = function insertCurrencySymbol(str, negative) {
+  return "" + (negative ? this.negativePrefix : this.prefix) + str + this.suffix;
+};
+
+NumberFormat.prototype.stripMinusSymbol = function stripMinusSymbol(str) {
+  return str.replace('-', this.minusSymbol).replace(this.minusSymbol, '');
+};
+
+NumberFormat.prototype.stripCurrencySymbol = function stripCurrencySymbol(str) {
+  return str.replace(this.negativePrefix, '').replace(this.prefix, '').replace(this.suffix, '');
+};
+
+NumberFormat.prototype.normalizeDecimalSymbol = function normalizeDecimalSymbol(str, from) {
+  var this$1 = this;
+  DECIMAL_SYMBOLS.forEach(function (s) {
+    str = str.substr(0, from) + str.substr(from).replace(s, this$1.decimalSymbol);
   });
   return str;
 };
 
-function parse$1(str, currencyFormat, valueAsInteger) {
-  if (valueAsInteger === void 0) valueAsInteger = false;
-
-  if (typeof str === 'string') {
-    str = normalizeDigits$1(str, currencyFormat.digits);
-    var value = stripCurrencySymbol$1(str, currencyFormat);
-    var numberParts = value.split(currencyFormat.decimalSymbol);
-
-    if (numberParts.length > 2) {
-      return null;
-    }
-
-    var integer = numberParts[0].replace(new RegExp("\\" + currencyFormat.groupingSymbol, 'g'), '');
-
-    if (!isNumber$1(integer)) {
-      return null;
-    }
-
-    var number = integer;
-
-    if (numberParts.length === 2) {
-      var fraction = numberParts[1];
-
-      if (fraction.length && !fraction.match(/^\d+$/g)) {
-        return null;
-      }
-
-      number += "." + fraction;
-    }
-
-    return toInteger$2(Number(normalizeMinusSymbol$1(number)), valueAsInteger, currencyFormat.minimumFractionDigits);
+NumberFormat.prototype.normalizeDigits = function normalizeDigits(str) {
+  if (this.digits[0] !== '0') {
+    this.digits.forEach(function (digit, index) {
+      str = str.replace(new RegExp(digit, 'g'), index);
+    });
   }
 
-  return null;
-}
+  return str;
+};
 
-function dispatchEvent$1(el, eventName, data) {
-  var event = document.createEvent('CustomEvent');
-  event.initCustomEvent(eventName, true, true, data);
-  el.dispatchEvent(event);
-}
+NumberFormat.prototype.onlyDigits = function onlyDigits(str) {
+  return this.normalizeDigits(str).replace(/\D+/g, '');
+};
+
+NumberFormat.prototype.onlyLocaleDigits = function onlyLocaleDigits(str) {
+  return str.replace(new RegExp("[^" + this.digits.join('') + "]*", 'g'), '');
+};
 
 var DEFAULT_OPTIONS = {
   locale: undefined,
@@ -405,7 +316,9 @@ var DEFAULT_OPTIONS = {
 };
 
 var parseCurrency = function parseCurrency(formattedValue, options) {
-  return parse$1(formattedValue, createCurrencyFormat(Object.assign({}, DEFAULT_OPTIONS, options)), options.valueAsInteger);
+  var mergedOptions = Object.assign({}, DEFAULT_OPTIONS, options);
+  var numberFormat = new NumberFormat(mergedOptions);
+  return toExternalNumberModel(numberFormat.parse(formattedValue), mergedOptions.valueAsInteger, numberFormat.maximumFractionDigits);
 };
 
 var setValue = function setValue(el, value) {
@@ -418,13 +331,12 @@ var setCaretPosition = function setCaretPosition(el, position) {
   return el.setSelectionRange(position, position);
 };
 
-var getCaretPositionAfterFormat = function getCaretPositionAfterFormat(newValue, inputtedValue, caretPosition, currencyFormat, options) {
-  var prefix = currencyFormat.prefix;
-  var suffix = currencyFormat.suffix;
-  var decimalSymbol = currencyFormat.decimalSymbol;
-  var maximumFractionDigits = currencyFormat.maximumFractionDigits;
-  var groupingSymbol = currencyFormat.groupingSymbol;
-  var digits = currencyFormat.digits;
+var getCaretPositionAfterFormat = function getCaretPositionAfterFormat(newValue, inputtedValue, caretPosition, numberFormat, options) {
+  var prefix = numberFormat.prefix;
+  var suffix = numberFormat.suffix;
+  var decimalSymbol = numberFormat.decimalSymbol;
+  var maximumFractionDigits = numberFormat.maximumFractionDigits;
+  var groupingSymbol = numberFormat.groupingSymbol;
   var decimalSymbolPosition = inputtedValue.indexOf(decimalSymbol) + 1;
   var caretPositionFromLeft = inputtedValue.length - caretPosition;
 
@@ -434,7 +346,7 @@ var getCaretPositionAfterFormat = function getCaretPositionAfterFormat(newValue,
     return newValue.length - caretPositionFromLeft - 1;
   } else {
     if (!options.autoDecimalMode && decimalSymbolPosition !== 0 && caretPosition > decimalSymbolPosition) {
-      if (onlyDigits(inputtedValue.substr(decimalSymbolPosition), digits).length - 1 === maximumFractionDigits) {
+      if (numberFormat.onlyDigits(inputtedValue.substr(decimalSymbolPosition)).length - 1 === maximumFractionDigits) {
         caretPositionFromLeft -= 1;
       }
     }
@@ -443,122 +355,19 @@ var getCaretPositionAfterFormat = function getCaretPositionAfterFormat(newValue,
   }
 };
 
-var getDistractionFreeCaretPosition = function getDistractionFreeCaretPosition(currencyFormat, options, value, caretPosition) {
+var getDistractionFreeCaretPosition = function getDistractionFreeCaretPosition(numberFormat, options, value, caretPosition) {
   var result = caretPosition;
 
   if (options.distractionFree.hideCurrencySymbol) {
-    result -= currencyFormat.prefix.length;
+    result -= numberFormat.prefix.length;
   }
 
   if (options.distractionFree.hideGroupingSymbol) {
-    result -= count(value.substring(0, caretPosition), currencyFormat.groupingSymbol);
+    result -= count(value.substring(0, caretPosition), numberFormat.groupingSymbol);
   }
 
   return Math.max(0, result);
 };
-
-var isValidInteger = function isValidInteger(integer, groupingSymbol) {
-  return integer.match(new RegExp("^(0|[1-9]\\d{0,2}(\\" + groupingSymbol + "?\\d{3})*)$"));
-};
-
-var isFractionIncomplete = function isFractionIncomplete(value, ref) {
-  var digits = ref.digits;
-  var decimalSymbol = ref.decimalSymbol;
-  var groupingSymbol = ref.groupingSymbol;
-  var numberParts = value.split(decimalSymbol);
-  return endsWith(value, decimalSymbol) && numberParts.length === 2 && isValidInteger(normalizeDigits$1(numberParts[0], digits), groupingSymbol);
-};
-
-var checkIncompleteValue = function checkIncompleteValue(value, negative, previousConformedValue, currencyFormat, hideCurrencySymbol) {
-  var digits = currencyFormat.digits;
-  var negativePrefix = currencyFormat.negativePrefix;
-  var decimalSymbol = currencyFormat.decimalSymbol;
-  var maximumFractionDigits = currencyFormat.maximumFractionDigits;
-
-  if (value === '' && negative && previousConformedValue !== (hideCurrencySymbol ? currencyFormat.minusSymbol : negativePrefix)) {
-    return insertCurrencySymbol('', currencyFormat, negative, hideCurrencySymbol);
-  } else if (maximumFractionDigits > 0) {
-    if (isFractionIncomplete(value, currencyFormat)) {
-      return insertCurrencySymbol(value, currencyFormat, negative, hideCurrencySymbol);
-    } else if (startsWith$1(value, decimalSymbol)) {
-      return insertCurrencySymbol("" + digits[0] + decimalSymbol + onlyDigits(value.substr(1), digits).substr(0, maximumFractionDigits), currencyFormat, negative, hideCurrencySymbol);
-    }
-  }
-
-  return null;
-};
-
-var getAutoDecimalModeConformedValue = function getAutoDecimalModeConformedValue(str, ref, allowNegative) {
-  var minimumFractionDigits = ref.minimumFractionDigits;
-  var digits = ref.digits;
-
-  if (str === '') {
-    return {
-      conformedValue: ''
-    };
-  } else {
-    var negative = isNegative(str) && allowNegative;
-    var conformedValue = allowNegative && str === '-' ? -0 : Number("" + (negative ? '-' : '') + removeLeadingZeros(onlyDigits(str, digits))) / Math.pow(10, minimumFractionDigits);
-    return {
-      conformedValue: conformedValue,
-      fractionDigits: conformedValue.toFixed(minimumFractionDigits).slice(-minimumFractionDigits)
-    };
-  }
-};
-
-function conformToMask(str, currencyFormat, previousConformedValue, hideCurrencySymbol, autoDecimalMode, allowNegative) {
-  if (previousConformedValue === void 0) previousConformedValue = '';
-
-  if (typeof str === 'string') {
-    var value = stripCurrencySymbol$1(str, currencyFormat);
-
-    if (currencyFormat.minimumFractionDigits > 0 && autoDecimalMode) {
-      return getAutoDecimalModeConformedValue(value, currencyFormat, allowNegative);
-    }
-
-    var negative = isNegative(value);
-
-    if (negative) {
-      value = value.substring(1);
-      negative &= allowNegative;
-    }
-
-    var incompleteValue = checkIncompleteValue(value, negative, previousConformedValue, currencyFormat, hideCurrencySymbol);
-
-    if (incompleteValue != null) {
-      return {
-        conformedValue: incompleteValue
-      };
-    }
-
-    var ref = value.split(currencyFormat.decimalSymbol);
-    var integer = ref[0];
-    var fraction = ref.slice(1);
-    var integerDigits = removeLeadingZeros(onlyDigits(integer, currencyFormat.digits));
-    var fractionDigits = onlyDigits(fraction.join(''), currencyFormat.digits).substr(0, currencyFormat.maximumFractionDigits);
-    var invalidFraction = fraction.length > 0 && fractionDigits.length === 0;
-    var invalidNegativeValue = integerDigits === '' && negative && (previousConformedValue === str.slice(0, -1) || previousConformedValue !== currencyFormat.negativePrefix);
-
-    if (invalidFraction || invalidNegativeValue) {
-      return {
-        conformedValue: previousConformedValue
-      };
-    } else if (isNumber$1(integerDigits)) {
-      return {
-        conformedValue: Number("" + (negative ? '-' : '') + integerDigits + "." + fractionDigits),
-        fractionDigits: fractionDigits
-      };
-    } else {
-      return {
-        conformedValue: ''
-      };
-    }
-  }
-
-  return {
-    conformedValue: previousConformedValue
-  };
-}
 
 var equal = function equal(a, b) {
   if (a === b) {
@@ -584,6 +393,77 @@ var equal = function equal(a, b) {
   });
 };
 
+var DefaultNumberMask = function DefaultNumberMask(numberFormat) {
+  this.numberFormat = numberFormat;
+};
+
+DefaultNumberMask.prototype.conformToMask = function conformToMask(str, previousConformedValue) {
+  var this$1 = this;
+  if (previousConformedValue === void 0) previousConformedValue = '';
+  var negative = this.numberFormat.isNegative(str);
+
+  var checkIncompleteValue = function checkIncompleteValue(str) {
+    if (str === '' && negative && previousConformedValue !== this$1.numberFormat.negativePrefix) {
+      return '';
+    } else if (this$1.numberFormat.maximumFractionDigits > 0) {
+      if (this$1.numberFormat.isFractionIncomplete(str)) {
+        return str;
+      } else if (startsWith$1(str, this$1.numberFormat.decimalSymbol)) {
+        return this$1.numberFormat.toFraction(str);
+      }
+    }
+
+    return null;
+  };
+
+  var value = str;
+  value = this.numberFormat.stripCurrencySymbol(value);
+  value = this.numberFormat.stripMinusSymbol(value);
+  var incompleteValue = checkIncompleteValue(value);
+
+  if (incompleteValue != null) {
+    return this.numberFormat.insertCurrencySymbol(incompleteValue, negative);
+  }
+
+  var ref = value.split(this.numberFormat.decimalSymbol);
+  var integer = ref[0];
+  var fraction = ref.slice(1);
+  var integerDigits = removeLeadingZeros(this.numberFormat.onlyDigits(integer));
+  var fractionDigits = this.numberFormat.onlyDigits(fraction.join('')).substr(0, this.numberFormat.maximumFractionDigits);
+  var invalidFraction = fraction.length > 0 && fractionDigits.length === 0;
+  var invalidNegativeValue = integerDigits === '' && negative && (previousConformedValue === str.slice(0, -1) || previousConformedValue !== this.numberFormat.negativePrefix);
+
+  if (invalidFraction || invalidNegativeValue) {
+    return previousConformedValue;
+  } else if (integerDigits.match(/\d+/)) {
+    return {
+      numberValue: Number("" + (negative ? '-' : '') + integerDigits + "." + fractionDigits),
+      fractionDigits: fractionDigits
+    };
+  } else {
+    return '';
+  }
+};
+
+var AutoDecimalModeNumberMask = function AutoDecimalModeNumberMask(numberFormat) {
+  this.numberFormat = numberFormat;
+};
+
+AutoDecimalModeNumberMask.prototype.conformToMask = function conformToMask(str) {
+  if (str === '') {
+    return '';
+  }
+
+  var negative = this.numberFormat.isNegative(str);
+  var numberValue = this.numberFormat.stripMinusSymbol(str) === '' ? -0 : Number("" + (negative ? '-' : '') + removeLeadingZeros(this.numberFormat.onlyDigits(str))) / Math.pow(10, this.numberFormat.minimumFractionDigits);
+  return {
+    numberValue: numberValue,
+    fractionDigits: numberValue.toFixed(this.numberFormat.minimumFractionDigits).slice(-this.numberFormat.minimumFractionDigits)
+  };
+};
+
+var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+
 var init = function init(el, optionsFromBinding, ref) {
   var $CI_DEFAULT_OPTIONS = ref.$CI_DEFAULT_OPTIONS;
   var inputElement = el.tagName.toLowerCase() === 'input' ? el : el.querySelector('input');
@@ -595,12 +475,25 @@ var init = function init(el, optionsFromBinding, ref) {
   var options = Object.assign({}, $CI_DEFAULT_OPTIONS || DEFAULT_OPTIONS, optionsFromBinding);
   var distractionFree = options.distractionFree;
   var autoDecimalMode = options.autoDecimalMode;
+  var valueRange = options.valueRange;
 
   if (typeof distractionFree === 'boolean') {
     options.distractionFree = {
       hideCurrencySymbol: distractionFree,
       hideNegligibleDecimalDigits: distractionFree,
       hideGroupingSymbol: distractionFree
+    };
+  }
+
+  if (valueRange) {
+    options.valueRange = {
+      min: valueRange.min !== undefined ? Math.max(valueRange.min, -MAX_SAFE_INTEGER) : -MAX_SAFE_INTEGER,
+      max: valueRange.max !== undefined ? Math.min(valueRange.max, MAX_SAFE_INTEGER) : MAX_SAFE_INTEGER
+    };
+  } else {
+    options.valueRange = {
+      min: -MAX_SAFE_INTEGER,
+      max: MAX_SAFE_INTEGER
     };
   }
 
@@ -611,54 +504,41 @@ var init = function init(el, optionsFromBinding, ref) {
     inputElement.setAttribute('inputmode', 'decimal');
   }
 
-  var currencyFormat = createCurrencyFormat(options);
-  inputElement.$ci = Object.assign({}, inputElement.$ci || {}, {
+  var currencyFormat = new NumberFormat(options);
+  inputElement.$ci = Object.assign({}, inputElement.$ci || {
+    numberValue: null
+  }, {
     options: options,
+    numberMask: options.autoDecimalMode ? new AutoDecimalModeNumberMask(currencyFormat) : new DefaultNumberMask(currencyFormat),
     currencyFormat: currencyFormat
   });
   return inputElement;
 };
 
 var validateValueRange = function validateValueRange(value, valueRange) {
-  if (valueRange) {
-    var min = valueRange.min;
-    var max = valueRange.max;
+  return Math.min(Math.max(value, valueRange.min), valueRange.max);
+};
 
-    if (min !== undefined && value < min) {
-      value = min;
-    }
-
-    if (max !== undefined && value > max) {
-      value = max;
-    }
-  }
-
-  return value;
+var triggerEvent = function triggerEvent(el, eventName) {
+  var ref = el.$ci;
+  var numberValue = ref.numberValue;
+  var currencyFormat = ref.currencyFormat;
+  var options = ref.options;
+  numberValue = toExternalNumberModel(numberValue, options.valueAsInteger, currencyFormat.maximumFractionDigits);
+  dispatchEvent$1(el, eventName, {
+    numberValue: numberValue
+  });
 };
 
 var applyFixedFractionFormat = function applyFixedFractionFormat(el, value, forcedChange) {
-  var ref = el.$ci.options;
-  var valueRange = ref.valueRange;
-  var locale = ref.locale;
-  var valueAsInteger = ref.valueAsInteger;
-  var ref$1 = el.$ci.currencyFormat;
-  var maximumFractionDigits = ref$1.maximumFractionDigits;
-  var minimumFractionDigits = ref$1.minimumFractionDigits;
+  if (forcedChange === void 0) forcedChange = false;
+  var ref = el.$ci;
+  var currencyFormat = ref.currencyFormat;
+  var options = ref.options;
+  format(el, value != null ? currencyFormat.format(validateValueRange(value, options.valueRange)) : null);
 
-  if (value != null) {
-    value = validateValueRange(value, valueRange);
-    value = new Intl.NumberFormat(locale, {
-      minimumFractionDigits: minimumFractionDigits,
-      maximumFractionDigits: maximumFractionDigits
-    }).format(value);
-  }
-
-  format(el, value);
-
-  if (forcedChange) {
-    dispatchEvent$1(el, 'change', {
-      numberValue: toInteger$2(el.$ci.numberValue, valueAsInteger, maximumFractionDigits)
-    });
+  if (value !== el.$ci.numberValue || forcedChange) {
+    triggerEvent(el, 'change');
   }
 };
 
@@ -666,19 +546,25 @@ var updateInputValue = function updateInputValue(el, value, hideNegligibleDecima
   if (value != null) {
     var ref = el.$ci;
     var focus = ref.focus;
-    var ref_options = ref.options;
-    var allowNegative = ref_options.allowNegative;
-    var autoDecimalMode = ref_options.autoDecimalMode;
-    var distractionFree = ref_options.distractionFree;
-    var locale = ref_options.locale;
+    var decimalSymbolInsertedAt = ref.decimalSymbolInsertedAt;
+    var options = ref.options;
+    var numberMask = ref.numberMask;
     var currencyFormat = ref.currencyFormat;
     var previousConformedValue = ref.previousConformedValue;
-    var hideCurrencySymbol = focus && distractionFree.hideCurrencySymbol;
-    var ref$1 = conformToMask(value, currencyFormat, previousConformedValue, hideCurrencySymbol, autoDecimalMode, allowNegative);
-    var conformedValue = ref$1.conformedValue;
-    var fractionDigits = ref$1.fractionDigits;
+    var allowNegative = options.allowNegative;
+    var distractionFree = options.distractionFree;
 
-    if (typeof conformedValue === 'number') {
+    if (decimalSymbolInsertedAt !== undefined) {
+      value = currencyFormat.normalizeDecimalSymbol(value, decimalSymbolInsertedAt);
+      el.$ci.decimalSymbolInsertedAt = undefined;
+    }
+
+    var conformedValue = numberMask.conformToMask(value, previousConformedValue);
+    var formattedValue;
+
+    if (_typeof(conformedValue) === 'object') {
+      var numberValue = conformedValue.numberValue;
+      var fractionDigits = conformedValue.fractionDigits;
       var maximumFractionDigits = currencyFormat.maximumFractionDigits;
       var minimumFractionDigits = currencyFormat.minimumFractionDigits;
 
@@ -687,18 +573,25 @@ var updateInputValue = function updateInputValue(el, value, hideNegligibleDecima
       }
 
       minimumFractionDigits = hideNegligibleDecimalDigits ? fractionDigits.replace(/0+$/, '').length : Math.min(minimumFractionDigits, fractionDigits.length);
-      var formattedValue = new Intl.NumberFormat(locale, {
+      formattedValue = numberValue > MAX_SAFE_INTEGER ? previousConformedValue : currencyFormat.format(numberValue, {
         useGrouping: !(focus && distractionFree.hideGroupingSymbol),
         minimumFractionDigits: minimumFractionDigits,
         maximumFractionDigits: maximumFractionDigits
-      }).format(Math.abs(conformedValue));
-      var isNegativeZero = conformedValue === 0 && 1 / conformedValue < 0;
-      el.value = insertCurrencySymbol(formattedValue, currencyFormat, isNegativeZero || conformedValue < 0, hideCurrencySymbol);
-      el.$ci.numberValue = conformedValue;
+      });
     } else {
-      el.value = conformedValue;
-      el.$ci.numberValue = parse$1(el.value, currencyFormat);
+      formattedValue = conformedValue;
     }
+
+    if (!allowNegative) {
+      formattedValue = formattedValue.replace(currencyFormat.negativePrefix, currencyFormat.prefix);
+    }
+
+    if (focus && distractionFree.hideCurrencySymbol) {
+      formattedValue = formattedValue.replace(currencyFormat.negativePrefix, currencyFormat.minusSymbol).replace(currencyFormat.prefix, '').replace(currencyFormat.suffix, '');
+    }
+
+    el.value = formattedValue;
+    el.$ci.numberValue = currencyFormat.parse(el.value);
   } else {
     el.value = el.$ci.numberValue = null;
   }
@@ -709,14 +602,7 @@ var updateInputValue = function updateInputValue(el, value, hideNegligibleDecima
 var format = function format(el, value, hideNegligibleDecimalDigits) {
   if (hideNegligibleDecimalDigits === void 0) hideNegligibleDecimalDigits = false;
   updateInputValue(el, value, hideNegligibleDecimalDigits);
-  var ref = el.$ci;
-  var numberValue = ref.numberValue;
-  var currencyFormat = ref.currencyFormat;
-  var options = ref.options;
-  numberValue = toInteger$2(numberValue, options.valueAsInteger, currencyFormat.maximumFractionDigits);
-  dispatchEvent$1(el, 'input', {
-    numberValue: numberValue
-  });
+  triggerEvent(el, 'input');
 };
 
 var addEventListener = function addEventListener(el) {
@@ -736,19 +622,28 @@ var addEventListener = function addEventListener(el) {
   }, {
     capture: true
   });
+  el.addEventListener('keypress', function (e) {
+    if (DECIMAL_SYMBOLS.includes(e.key)) {
+      el.$ci.decimalSymbolInsertedAt = el.selectionStart;
+    }
+  });
   el.addEventListener('format', function (e) {
     var ref = el.$ci;
     var currencyFormat = ref.currencyFormat;
     var options = ref.options;
     var numberValue = ref.numberValue;
-    var value = toFloat(e.detail.value, options.valueAsInteger, currencyFormat.maximumFractionDigits);
 
-    if (value !== numberValue) {
-      applyFixedFractionFormat(el, value);
+    var toInternalNumberModel = function toInternalNumberModel(n) {
+      return options.valueAsInteger && n != null ? n / Math.pow(10, currencyFormat.maximumFractionDigits) : n;
+    };
+
+    var newValue = toInternalNumberModel(e.detail.value);
+
+    if (numberValue !== newValue) {
+      applyFixedFractionFormat(el, newValue);
     }
   });
   el.addEventListener('focus', function () {
-    el.$ci.oldValue = el.$ci.numberValue;
     el.$ci.focus = true;
     var ref = el.$ci.options.distractionFree;
     var hideCurrencySymbol = ref.hideCurrencySymbol;
@@ -760,7 +655,10 @@ var addEventListener = function addEventListener(el) {
         var value = el.value;
         var selectionStart = el.selectionStart;
         var selectionEnd = el.selectionEnd;
-        format(el, el.value, hideNegligibleDecimalDigits);
+
+        if (value) {
+          format(el, value, hideNegligibleDecimalDigits);
+        }
 
         if (Math.abs(selectionStart - selectionEnd) > 0) {
           el.setSelectionRange(0, el.value.length);
@@ -772,26 +670,25 @@ var addEventListener = function addEventListener(el) {
   });
   el.addEventListener('blur', function () {
     el.$ci.focus = false;
-    applyFixedFractionFormat(el, el.$ci.numberValue, el.$ci.oldValue !== el.$ci.numberValue);
+
+    if (el.$ci.numberValue) {
+      applyFixedFractionFormat(el, el.$ci.numberValue);
+    }
+  });
+  el.addEventListener('change', function (e) {
+    if (!e.detail) {
+      triggerEvent(el, 'change');
+    }
   });
 };
 
 var directive = {
   bind: function bind(el, ref, ref$1) {
-    var options = ref.value;
+    var value = ref.value;
     var context = ref$1.context;
-    var inputElement = init(el, options, context);
-    Vue.nextTick(function () {
-      var value = inputElement.value;
-      var inputElement_$ci = inputElement.$ci;
-      var currencyFormat = inputElement_$ci.currencyFormat;
-      var options = inputElement_$ci.options;
-
-      if (value) {
-        applyFixedFractionFormat(inputElement, toFloat(parse$1(value, currencyFormat), options.valueAsInteger, currencyFormat.maximumFractionDigits));
-      }
-    });
+    var inputElement = init(el, value, context);
     addEventListener(inputElement);
+    setValue(inputElement, inputElement.$ci.currencyFormat.parse(inputElement.value));
   },
   componentUpdated: function componentUpdated(el, ref, ref$1) {
     var value = ref.value;
@@ -800,7 +697,7 @@ var directive = {
 
     if (!equal(value, oldValue)) {
       var inputElement = init(el, value, context);
-      applyFixedFractionFormat(inputElement, inputElement.$ci.numberValue, value.valueAsInteger !== oldValue.valueAsInteger);
+      applyFixedFractionFormat(inputElement, inputElement.$ci.numberValue, true);
     }
   }
 };
@@ -808,9 +705,6 @@ var component = {
   render: function render(h) {
     var this$1 = this;
     return h('input', {
-      domProps: {
-        value: this.formattedValue
-      },
       directives: [{
         name: 'currency',
         value: this.options
@@ -820,15 +714,11 @@ var component = {
           if (e.detail) {
             this$1.$emit('change', e.detail.numberValue);
           }
-
-          this$1.formattedValue = this$1.$el.value;
         },
         input: function input(e) {
           if (e.detail && this$1.value !== e.detail.numberValue) {
             this$1.$emit('input', e.detail.numberValue);
           }
-
-          this$1.formattedValue = this$1.$el.value;
         }
       })
     });
@@ -875,19 +765,8 @@ var component = {
       default: undefined
     }
   },
-  data: function data() {
-    return {
-      formattedValue: null
-    };
-  },
-  created: function created() {
-    var ref = createCurrencyFormat(this.options);
-    var minimumFractionDigits = ref.minimumFractionDigits;
-    var maximumFractionDigits = ref.maximumFractionDigits;
-    this.formattedValue = typeof this.value === 'number' ? this.value.toLocaleString(this.options.locale, {
-      minimumFractionDigits: minimumFractionDigits,
-      maximumFractionDigits: maximumFractionDigits
-    }) : null;
+  mounted: function mounted() {
+    this.setValue(this.value);
   },
   computed: {
     options: function options() {
