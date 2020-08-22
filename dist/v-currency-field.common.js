@@ -1,15 +1,11 @@
 /*!
- * v-currency-field v3.0.11 
+ * v-currency-field v3.1.0-rc1 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var parse = _interopDefault(require('vue-currency-input/src/utils/parse'));
 
 function _typeof(obj) {
   "@babel/helpers - typeof";
@@ -118,31 +114,21 @@ var dispatchEvent = (function (el, eventName, data) {
   el.dispatchEvent(event);
 });
 
-var startsWith = function startsWith(str, search) {
-  return str.substring(0, search.length) === search;
-};
-var removePrefix = function removePrefix(str, prefix) {
-  if (prefix && startsWith(str, prefix)) {
-    return str.substr(prefix.length);
-  }
+/**
+ * Sets the value of an input programmatically.
+ *
+ * @param {HTMLInputElement} el The input element the `v-currency` directive is bound to.
+ * @param {Number} value The number to be set.
+ */
 
-  return str;
-};
-var stripCurrencySymbolAndMinusSign = function stripCurrencySymbolAndMinusSign(str, _ref) {
-  var prefix = _ref.prefix,
-      suffix = _ref.suffix;
-  var value = str.replace(prefix, '').replace(suffix, '');
-  return {
-    value: removePrefix(value, '-'),
-    negative: startsWith(value, '-')
-  };
-};
-var toInteger = function toInteger(number, valueAsInteger, fractionDigits) {
-  return valueAsInteger && number != null ? Number(number.toFixed(fractionDigits).split('.').join('')) : number;
+var setValue = function setValue(el, value) {
+  return dispatchEvent(el, 'format', {
+    value: value
+  });
 };
 
 /**
- * Vue Currency Input 1.20.2
+ * Vue Currency Input 1.21.0
  * (c) 2018-2020 Matthias Stiller
  * @license MIT
  */
@@ -154,6 +140,31 @@ function dispatchEvent$1(el, eventName, data) {
 
 var toExternalNumberModel = function toExternalNumberModel(number, valueAsInteger, fractionDigits) {
   return valueAsInteger && number != null ? Number(number.toFixed(fractionDigits).split('.').join('')) : number;
+};
+
+var DEFAULT_OPTIONS = {
+  locale: undefined,
+  currency: 'EUR',
+  valueAsInteger: false,
+  distractionFree: true,
+  precision: undefined,
+  autoDecimalMode: false,
+  valueRange: undefined,
+  allowNegative: true
+};
+
+var getValue = function getValue(el) {
+  var ref = el.$ci;
+  var numberValue = ref.numberValue;
+  var currencyFormat = ref.currencyFormat;
+  var options = ref.options;
+  return toExternalNumberModel(numberValue, options.valueAsInteger, currencyFormat.maximumFractionDigits);
+};
+
+var setValue$1 = function setValue(el, value) {
+  return dispatchEvent$1(el, 'format', {
+    value: value
+  });
 };
 
 var escapeRegExp = function escapeRegExp(str) {
@@ -168,12 +179,78 @@ var count = function count(str, search) {
   return (str.match(new RegExp(escapeRegExp(search), 'g')) || []).length;
 };
 
-var startsWith$1 = function startsWith(str, search) {
+var startsWith = function startsWith(str, search) {
   return str.substring(0, search.length) === search;
 };
 
 var substringBefore = function substringBefore(str, search) {
   return str.substring(0, str.indexOf(search));
+};
+
+var setCaretPosition = function setCaretPosition(el, position) {
+  return el.setSelectionRange(position, position);
+};
+
+var getCaretPositionAfterFormat = function getCaretPositionAfterFormat(newValue, inputtedValue, caretPosition, numberFormat, options) {
+  var prefix = numberFormat.prefix;
+  var suffix = numberFormat.suffix;
+  var decimalSymbol = numberFormat.decimalSymbol;
+  var maximumFractionDigits = numberFormat.maximumFractionDigits;
+  var groupingSymbol = numberFormat.groupingSymbol;
+  var decimalSymbolPosition = inputtedValue.indexOf(decimalSymbol) + 1;
+  var caretPositionFromLeft = inputtedValue.length - caretPosition;
+
+  if (Math.abs(newValue.length - inputtedValue.length) > 1 && caretPosition <= decimalSymbolPosition) {
+    return newValue.indexOf(decimalSymbol) + 1;
+  } else if (newValue.substr(caretPosition, 1) === groupingSymbol && count(newValue, groupingSymbol) === count(inputtedValue, groupingSymbol) + 1) {
+    return newValue.length - caretPositionFromLeft - 1;
+  } else {
+    if (!options.autoDecimalMode && decimalSymbolPosition !== 0 && caretPosition > decimalSymbolPosition) {
+      if (numberFormat.onlyDigits(inputtedValue.substr(decimalSymbolPosition)).length - 1 === maximumFractionDigits) {
+        caretPositionFromLeft -= 1;
+      }
+    }
+
+    return options.distractionFree.hideCurrencySymbol ? newValue.length - caretPositionFromLeft : Math.max(newValue.length - Math.max(caretPositionFromLeft, suffix.length), prefix.length === 0 ? 0 : prefix.length + 1);
+  }
+};
+
+var getDistractionFreeCaretPosition = function getDistractionFreeCaretPosition(numberFormat, options, value, caretPosition) {
+  var result = caretPosition;
+
+  if (options.distractionFree.hideCurrencySymbol) {
+    result -= numberFormat.prefix.length;
+  }
+
+  if (options.distractionFree.hideGroupingSymbol) {
+    result -= count(value.substring(0, caretPosition), numberFormat.groupingSymbol);
+  }
+
+  return Math.max(0, result);
+};
+
+var equal = function equal(a, b) {
+  if (a === b) {
+    return true;
+  }
+
+  if (!a || !b || _typeof(a) !== 'object' || _typeof(b) !== 'object') {
+    return false;
+  }
+
+  var keys = Object.keys(a);
+
+  if (keys.length !== Object.keys(b).length) {
+    return false;
+  }
+
+  if (!keys.every(Object.prototype.hasOwnProperty.bind(b))) {
+    return false;
+  }
+
+  return keys.every(function (key) {
+    return equal(a[key], b[key]);
+  });
 };
 
 var DECIMAL_SYMBOLS = [',', '.', '٫'];
@@ -269,7 +346,7 @@ NumberFormat.prototype.isFractionIncomplete = function isFractionIncomplete(str)
 };
 
 NumberFormat.prototype.isNegative = function isNegative(str) {
-  return startsWith$1(str, this.negativePrefix) || startsWith$1(str.replace('-', this.minusSymbol), this.minusSymbol);
+  return startsWith(str, this.negativePrefix) || startsWith(str.replace('-', this.minusSymbol), this.minusSymbol);
 };
 
 NumberFormat.prototype.insertCurrencySymbol = function insertCurrencySymbol(str, negative) {
@@ -310,95 +387,6 @@ NumberFormat.prototype.onlyLocaleDigits = function onlyLocaleDigits(str) {
   return str.replace(new RegExp("[^" + this.digits.join('') + "]*", 'g'), '');
 };
 
-var DEFAULT_OPTIONS = {
-  locale: undefined,
-  currency: 'EUR',
-  valueAsInteger: false,
-  distractionFree: true,
-  precision: undefined,
-  autoDecimalMode: false,
-  valueRange: undefined,
-  allowNegative: true
-};
-
-var parseCurrency = function parseCurrency(formattedValue, options) {
-  var mergedOptions = Object.assign({}, DEFAULT_OPTIONS, options);
-  var numberFormat = new NumberFormat(mergedOptions);
-  return toExternalNumberModel(numberFormat.parse(formattedValue), mergedOptions.valueAsInteger, numberFormat.maximumFractionDigits);
-};
-
-var setValue = function setValue(el, value) {
-  return dispatchEvent$1(el, 'format', {
-    value: value
-  });
-};
-
-var setCaretPosition = function setCaretPosition(el, position) {
-  return el.setSelectionRange(position, position);
-};
-
-var getCaretPositionAfterFormat = function getCaretPositionAfterFormat(newValue, inputtedValue, caretPosition, numberFormat, options) {
-  var prefix = numberFormat.prefix;
-  var suffix = numberFormat.suffix;
-  var decimalSymbol = numberFormat.decimalSymbol;
-  var maximumFractionDigits = numberFormat.maximumFractionDigits;
-  var groupingSymbol = numberFormat.groupingSymbol;
-  var decimalSymbolPosition = inputtedValue.indexOf(decimalSymbol) + 1;
-  var caretPositionFromLeft = inputtedValue.length - caretPosition;
-
-  if (Math.abs(newValue.length - inputtedValue.length) > 1 && caretPosition <= decimalSymbolPosition) {
-    return newValue.indexOf(decimalSymbol) + 1;
-  } else if (newValue.substr(caretPosition, 1) === groupingSymbol && count(newValue, groupingSymbol) === count(inputtedValue, groupingSymbol) + 1) {
-    return newValue.length - caretPositionFromLeft - 1;
-  } else {
-    if (!options.autoDecimalMode && decimalSymbolPosition !== 0 && caretPosition > decimalSymbolPosition) {
-      if (numberFormat.onlyDigits(inputtedValue.substr(decimalSymbolPosition)).length - 1 === maximumFractionDigits) {
-        caretPositionFromLeft -= 1;
-      }
-    }
-
-    return options.distractionFree.hideCurrencySymbol ? newValue.length - caretPositionFromLeft : Math.max(newValue.length - Math.max(caretPositionFromLeft, suffix.length), prefix.length === 0 ? 0 : prefix.length + 1);
-  }
-};
-
-var getDistractionFreeCaretPosition = function getDistractionFreeCaretPosition(numberFormat, options, value, caretPosition) {
-  var result = caretPosition;
-
-  if (options.distractionFree.hideCurrencySymbol) {
-    result -= numberFormat.prefix.length;
-  }
-
-  if (options.distractionFree.hideGroupingSymbol) {
-    result -= count(value.substring(0, caretPosition), numberFormat.groupingSymbol);
-  }
-
-  return Math.max(0, result);
-};
-
-var equal = function equal(a, b) {
-  if (a === b) {
-    return true;
-  }
-
-  if (!a || !b || _typeof(a) !== 'object' || _typeof(b) !== 'object') {
-    return false;
-  }
-
-  var keys = Object.keys(a);
-
-  if (keys.length !== Object.keys(b).length) {
-    return false;
-  }
-
-  if (!keys.every(Object.prototype.hasOwnProperty.bind(b))) {
-    return false;
-  }
-
-  return keys.every(function (key) {
-    return equal(a[key], b[key]);
-  });
-};
-
 var DefaultNumberMask = function DefaultNumberMask(numberFormat) {
   this.numberFormat = numberFormat;
 };
@@ -414,7 +402,7 @@ DefaultNumberMask.prototype.conformToMask = function conformToMask(str, previous
     } else if (this$1.numberFormat.maximumFractionDigits > 0) {
       if (this$1.numberFormat.isFractionIncomplete(str)) {
         return str;
-      } else if (startsWith$1(str, this$1.numberFormat.decimalSymbol)) {
+      } else if (startsWith(str, this$1.numberFormat.decimalSymbol)) {
         return this$1.numberFormat.toFraction(str);
       }
     }
@@ -471,14 +459,14 @@ AutoDecimalModeNumberMask.prototype.conformToMask = function conformToMask(str) 
 var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
 
 var init = function init(el, optionsFromBinding, ref) {
-  var $CI_DEFAULT_OPTIONS = ref.$CI_DEFAULT_OPTIONS;
+  var $ci = ref.$ci;
   var inputElement = el.tagName.toLowerCase() === 'input' ? el : el.querySelector('input');
 
   if (!inputElement) {
     throw new Error('No input element found');
   }
 
-  var options = Object.assign({}, $CI_DEFAULT_OPTIONS || DEFAULT_OPTIONS, optionsFromBinding);
+  var options = Object.assign({}, $ci ? $ci.GLOBAL_OPTIONS : DEFAULT_OPTIONS, optionsFromBinding);
   var distractionFree = options.distractionFree;
   var autoDecimalMode = options.autoDecimalMode;
   var valueRange = options.valueRange;
@@ -521,10 +509,6 @@ var init = function init(el, optionsFromBinding, ref) {
   return inputElement;
 };
 
-var validateValueRange = function validateValueRange(value, valueRange) {
-  return Math.min(Math.max(value, valueRange.min), valueRange.max);
-};
-
 var triggerEvent = function triggerEvent(el, eventName) {
   var ref = el.$ci;
   var numberValue = ref.numberValue;
@@ -541,7 +525,15 @@ var applyFixedFractionFormat = function applyFixedFractionFormat(el, value, forc
   var ref = el.$ci;
   var currencyFormat = ref.currencyFormat;
   var options = ref.options;
-  format(el, value != null ? currencyFormat.format(validateValueRange(value, options.valueRange)) : null);
+  var ref$1 = options.valueRange;
+  var min = ref$1.min;
+  var max = ref$1.max;
+
+  var validateValueRange = function validateValueRange() {
+    return Math.min(Math.max(value, min), max);
+  };
+
+  format(el, value != null ? currencyFormat.format(validateValueRange()) : null);
 
   if (value !== el.$ci.numberValue || forcedChange) {
     triggerEvent(el, 'change');
@@ -677,7 +669,7 @@ var addEventListener = function addEventListener(el) {
   el.addEventListener('blur', function () {
     el.$ci.focus = false;
 
-    if (el.$ci.numberValue) {
+    if (el.$ci.numberValue != null) {
       applyFixedFractionFormat(el, el.$ci.numberValue);
     }
   });
@@ -694,7 +686,7 @@ var directive = {
     var context = ref$1.context;
     var inputElement = init(el, value, context);
     addEventListener(inputElement);
-    setValue(inputElement, inputElement.$ci.currencyFormat.parse(inputElement.value));
+    setValue$1(inputElement, inputElement.$ci.currencyFormat.parse(inputElement.value));
   },
   componentUpdated: function componentUpdated(el, ref, ref$1) {
     var value = ref.value;
@@ -777,7 +769,7 @@ var component = {
   computed: {
     options: function options() {
       var this$1 = this;
-      var options = Object.assign({}, this.$CI_DEFAULT_OPTIONS || DEFAULT_OPTIONS);
+      var options = Object.assign({}, this.$ci ? this.$ci.GLOBAL_OPTIONS : DEFAULT_OPTIONS);
       Object.keys(DEFAULT_OPTIONS).forEach(function (key) {
         if (this$1[key] !== undefined) {
           options[key] = this$1[key];
@@ -790,8 +782,8 @@ var component = {
     value: 'setValue'
   },
   methods: {
-    setValue: function setValue$1(value) {
-      setValue(this.$el, value);
+    setValue: function setValue$1$1(value) {
+      setValue$1(this.$el, value);
     }
   }
 };
@@ -804,13 +796,12 @@ var plugin = {
     if (directiveName === void 0) directiveName = 'currency';
     var globalOptions = ref.globalOptions;
     if (globalOptions === void 0) globalOptions = {};
-    Vue.prototype.$CI_DEFAULT_OPTIONS = Object.assign({}, DEFAULT_OPTIONS, globalOptions);
     Vue.component(componentName, component);
     Vue.directive(directiveName, directive);
-
-    Vue.prototype.$parseCurrency = function (str, options) {
-      if (options === void 0) options = {};
-      return parseCurrency(str, Object.assign({}, globalOptions, options));
+    Vue.prototype.$ci = {
+      getValue: getValue,
+      setValue: setValue$1,
+      GLOBAL_OPTIONS: Object.assign({}, DEFAULT_OPTIONS, globalOptions)
     };
   }
 };
@@ -837,7 +828,7 @@ var script = {
     value: {
       type: [Number, String],
       default: function _default() {
-        return null;
+        return 0;
       }
     },
     locale: {
@@ -904,14 +895,7 @@ var script = {
     };
   },
   mounted: function mounted() {
-    this.$refs.textfield.resetValidation();
-    dispatchEvent(this.$el.querySelector('input'), 'defaultValue');
-
-    if (!this.valueAsInteger) {
-      dispatchEvent(this.$el.querySelector('input'), 'format', {
-        value: this.value
-      });
-    }
+    this.addListeners(this.$el.querySelector('input'));
   },
   computed: {
     attrs: function attrs() {
@@ -949,15 +933,38 @@ var script = {
     }
   },
   watch: {
-    value: function value(_value) {
-      dispatchEvent(this.$el.querySelector('input'), 'format', {
-        value: _value
-      });
-    }
+    value: 'setValue'
   },
   methods: {
-    listeners: function listeners() {
+    addListeners: function addListeners(el) {
       var _this = this;
+
+      el.addEventListener('change', function (e) {
+        if (e.detail) {
+          _this.$emit('change', e.detail.numberValue);
+        }
+
+        if (_this.value == null && _this.value == undefined && _this.defaultValue !== null && _this.defaultValue !== undefined) {
+          _this.setValue(_this.valueAsInteger && _this.defaultValue ? _this.defaultValue * Math.pow(10, _this.decimalLength) : _this.defaultValue);
+        }
+      }, {
+        capture: true
+      });
+      el.addEventListener('input', function (e) {
+        if (e.detail && _this.value !== e.detail.numberValue) {
+          _this.$emit('input', e.detail.numberValue);
+        }
+      }, {
+        capture: true
+      });
+    },
+    setValue: function setValue$1(value) {
+      var input = this.$el.querySelector('input');
+
+      setValue(input, value);
+    },
+    listeners: function listeners() {
+      var _this2 = this;
 
       // eslint-disable-next-line
       var _this$$listeners = this.$listeners,
@@ -966,57 +973,19 @@ var script = {
 
 
       return _objectSpread2(_objectSpread2({}, listeners), {}, {
-        defaultValue: function defaultValue() {
-          var input = _this.$el.querySelector('input');
-
-          if (!_this.value && _this.defaultValue !== null && _this.defaultValue !== undefined && !input.$ci.focus) {
-            input.$ci.numberValue = _this.valueAsInteger && _this.defaultValue ? _this.defaultValue * Math.pow(10, _this.decimalLength) : _this.defaultValue;
-            dispatchEvent(input, 'blur');
+        input: function input(value) {
+          if (_this2.$refs.textfield.isResetting) {
+            _this2.setValue(_this2.valueAsInteger && _this2.defaultValue ? _this2.defaultValue * Math.pow(10, _this2.decimalLength) : _this2.defaultValue);
           }
-        },
-        input: function input() {
-          var input = _this.$el.querySelector('input');
-
-          if ((input.$ci.numberValue == null || input.$ci.numberValue == undefined) && _this.defaultValue !== null && !input.$ci.focus) {
-            input.$ci.numberValue = _this.defaultValue;
-            dispatchEvent(input, 'blur');
-          }
-
-          _this.$emit('input', toInteger(input.$ci.numberValue, _this.valueAsInteger, _this.decimalLength));
-
-          _this.formattedValue = input.value;
         },
         'keyup': function keyup(event) {
           if (event.key === '-' || event.key === '+') {
-            var _stripCurrencySymbolA = stripCurrencySymbolAndMinusSign(_this.$el.querySelector('input').value, {
-              prefix: '',
-              suffix: ''
-            }),
-                value = _stripCurrencySymbolA.value,
-                negative = _stripCurrencySymbolA.negative;
-
-            var numberParts = value.split(_this.$el.querySelector('input').$ci.currencyFormat.decimalSymbol);
-            var parsedValue = parse(value, _this.$el.querySelector('input').$ci.currencyFormat);
-            var stringValue = null;
-
-            if (numberParts.length === 2) {
-              var fraction = numberParts[1];
-              stringValue = new Intl.NumberFormat(_this.locale, {
-                minimumFractionDigits: fraction.length,
-                maximumFractionDigits: fraction.length
-              }).format(parsedValue);
+            if (event.key === '-' && _this2.value >= 0) {
+              _this2.setValue(_this2.value * -1);
             }
 
-            var numberValue = stringValue || parsedValue;
-
-            if (event.key === '-' && !negative && numberValue !== null) {
-              _this.$el.querySelector('input').value = "-".concat(numberValue);
-              dispatchEvent(_this.$el.querySelector('input'), 'input');
-            }
-
-            if (event.key === '+' && negative && numberValue !== null) {
-              _this.$el.querySelector('input').value = "".concat(numberValue);
-              dispatchEvent(_this.$el.querySelector('input'), 'input');
+            if (event.key === '+' && _this2.value <= 0) {
+              _this2.setValue(_this2.value * -1);
             }
           }
         }
@@ -1114,7 +1083,7 @@ var normalizeComponent_1 = normalizeComponent;
 const __vue_script__ = script;
 
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-text-field',_vm._g(_vm._b({directives:[{name:"currency-directive",rawName:"v-currency-directive",value:({currency: _vm.currency, locale: _vm.locale, distractionFree: _vm.distractionFree, precision: _vm.decimalLength, autoDecimalMode: _vm.decimalMode, valueRange: _vm.valueRange, allowNegative: _vm.allowNegative, valueAsInteger: _vm.valueAsInteger}),expression:"{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}"}],ref:"textfield",attrs:{"type":"tel"},scopedSlots:_vm._u([_vm._l((_vm.$slots),function(index,name){return {key:name,fn:function(){return [_vm._t(name)]},proxy:true}})],null,true),model:{value:(_vm.formattedValue),callback:function ($$v) {_vm.formattedValue=$$v;},expression:"formattedValue"}},'v-text-field',_vm.attrs,false),_vm.listeners()))};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-text-field',_vm._g(_vm._b({directives:[{name:"currency-directive",rawName:"v-currency-directive",value:({currency: _vm.currency, locale: _vm.locale, distractionFree: _vm.distractionFree, precision: _vm.decimalLength, autoDecimalMode: _vm.decimalMode, valueRange: _vm.valueRange, allowNegative: _vm.allowNegative, valueAsInteger: _vm.valueAsInteger}),expression:"{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}"}],ref:"textfield",scopedSlots:_vm._u([_vm._l((_vm.$slots),function(index,name){return {key:name,fn:function(){return [_vm._t(name)]},proxy:true}})],null,true),model:{value:(_vm.formattedValue),callback:function ($$v) {_vm.formattedValue=$$v;},expression:"formattedValue"}},'v-text-field',_vm.attrs,false),_vm.listeners()))};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -1142,7 +1111,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-var version = '3.0.11';
+var version = '3.1.0-rc1';
 
 function install(Vue, globalOptions) {
   if (globalOptions) {
