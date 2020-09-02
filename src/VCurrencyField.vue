@@ -129,7 +129,7 @@ export default {
       return {
         ...listeners,
         input: (value) => {
-          if (this.$refs.textfield.isResetting) {
+          if (this.$refs.textfield.isResetting || value == null) {
             this.setValue(this.valueAsInteger && this.defaultValue ? this.defaultValue * Math.pow(10, this.decimalLength) : this.defaultValue)
           }
         },

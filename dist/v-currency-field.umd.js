@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.1.0-rc1 
+ * v-currency-field v3.1.0 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -976,7 +976,7 @@
 
         return _objectSpread2(_objectSpread2({}, listeners), {}, {
           input: function input(value) {
-            if (_this2.$refs.textfield.isResetting) {
+            if (_this2.$refs.textfield.isResetting || value == null) {
               _this2.setValue(_this2.valueAsInteger && _this2.defaultValue ? _this2.defaultValue * Math.pow(10, _this2.decimalLength) : _this2.defaultValue);
             }
           },
@@ -1113,7 +1113,7 @@
       undefined
     );
 
-  var version = '3.1.0-rc1';
+  var version = '3.1.0';
 
   function install(Vue, globalOptions) {
     if (globalOptions) {
