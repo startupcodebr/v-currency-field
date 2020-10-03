@@ -125,7 +125,7 @@ export default {
     },
     listeners() {
       // eslint-disable-next-line
-      const { input, ...listeners } = this.$listeners; // all but input event
+      const { input, keyup, ...listeners } = this.$listeners; // all but input event
       return {
         ...listeners,
         input: (value) => {
@@ -135,13 +135,17 @@ export default {
         },
         'keyup': (event) => {
           if (event.key === '-' || event.key === '+') {
-            if (event.key === '-' && this.value >= 0) {
+            if (this.value != null && event.key === '-' && this.value >= 0) {
               this.setValue(this.value * -1)
             }
             
-            if (event.key === '+' && this.value <= 0) {
+            if (this.value != null && event.key === '+' && this.value <= 0) {
               this.setValue(this.value * -1)
             }
+          }
+          
+          if (keyup) {
+            keyup();
           }
         }
       };

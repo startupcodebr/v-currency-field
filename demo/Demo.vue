@@ -14,9 +14,9 @@
                  dense 
                  v-model="value" 
                  locale="pt-BR" 
-                 :auto-decimal-mode="true" 
+                 :auto-decimal-mode="false" 
                  :decimal-length="2" 
-                 :default-value="50.55" 
+                 :default-value="0" 
                  :value-as-integer="false"
                  :allow-negative="true"
                  label="Income" 
@@ -130,7 +130,7 @@
     name: 'demo',
     data() {
       return {
-        value: 9716,
+        value: 0,
         submited: false,
         snack: false,
         snackColor: '',
@@ -273,6 +273,10 @@
       close () {
         console.log('Dialog closed')
       },
+      test () {
+        console.log("teste")
+        alert("msg function");
+      }
     },
   }
 </script>

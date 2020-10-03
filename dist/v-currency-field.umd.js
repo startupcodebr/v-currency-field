@@ -971,7 +971,8 @@
         // eslint-disable-next-line
         var _this$$listeners = this.$listeners,
             input = _this$$listeners.input,
-            listeners = _objectWithoutProperties(_this$$listeners, ["input"]); // all but input event
+            _keyup = _this$$listeners.keyup,
+            listeners = _objectWithoutProperties(_this$$listeners, ["input", "keyup"]); // all but input event
 
 
         return _objectSpread2(_objectSpread2({}, listeners), {}, {
@@ -982,13 +983,17 @@
           },
           'keyup': function keyup(event) {
             if (event.key === '-' || event.key === '+') {
-              if (event.key === '-' && _this2.value >= 0) {
+              if (_this2.value != null && event.key === '-' && _this2.value >= 0) {
                 _this2.setValue(_this2.value * -1);
               }
 
-              if (event.key === '+' && _this2.value <= 0) {
+              if (_this2.value != null && event.key === '+' && _this2.value <= 0) {
                 _this2.setValue(_this2.value * -1);
               }
+            }
+
+            if (_keyup) {
+              _keyup();
             }
           }
         });
