@@ -1,5 +1,5 @@
 /*!
- * v-currency-field v3.1.0 
+ * v-currency-field v3.1.1 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
  * Released under the MIT License.
  */
@@ -1088,7 +1088,7 @@ var normalizeComponent_1 = normalizeComponent;
 const __vue_script__ = script;
 
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-text-field',_vm._g(_vm._b({directives:[{name:"currency-directive",rawName:"v-currency-directive",value:({currency: _vm.currency, locale: _vm.locale, distractionFree: _vm.distractionFree, precision: _vm.decimalLength, autoDecimalMode: _vm.decimalMode, valueRange: _vm.valueRange, allowNegative: _vm.allowNegative, valueAsInteger: _vm.valueAsInteger}),expression:"{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}"}],ref:"textfield",scopedSlots:_vm._u([_vm._l((_vm.$slots),function(index,name){return {key:name,fn:function(){return [_vm._t(name)]},proxy:true}})],null,true),model:{value:(_vm.formattedValue),callback:function ($$v) {_vm.formattedValue=$$v;},expression:"formattedValue"}},'v-text-field',_vm.attrs,false),_vm.listeners()))};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-text-field',_vm._g(_vm._b({directives:[{name:"currency-directive",rawName:"v-currency-directive",value:({currency: _vm.currency, locale: _vm.locale, distractionFree: _vm.distractionFree, precision: _vm.decimalLength, autoDecimalMode: _vm.decimalMode, valueRange: _vm.valueRange, allowNegative: _vm.allowNegative, valueAsInteger: _vm.valueAsInteger}),expression:"{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}"}],ref:"textfield",attrs:{"type":"text"},scopedSlots:_vm._u([_vm._l((_vm.$slots),function(index,name){return {key:name,fn:function(){return [_vm._t(name)]},proxy:true}})],null,true),model:{value:(_vm.formattedValue),callback:function ($$v) {_vm.formattedValue=$$v;},expression:"formattedValue"}},'v-text-field',_vm.attrs,false),_vm.listeners()))};
 var __vue_staticRenderFns__ = [];
 
   /* style */
@@ -1116,7 +1116,7 @@ var __vue_staticRenderFns__ = [];
     undefined
   );
 
-var version = '3.1.0';
+var version = '3.1.1';
 
 function install(Vue, globalOptions) {
   if (globalOptions) {
