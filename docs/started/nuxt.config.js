@@ -1,7 +1,7 @@
-buildModules: [
-    ['@nuxtjs/vuetify']
-],
 {
+  buildModules: [
+    ['@nuxtjs/vuetify']
+  ],
   modules: [
   	['v-currency-field/nuxt', {
       locale: 'pt-BR',
