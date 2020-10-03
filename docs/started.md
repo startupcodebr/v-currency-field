@@ -35,11 +35,19 @@ With treeshaking enabled, webpack don't reconize v-text-field inside v-currency-
 ### Nuxt
 #### No Treeshaking
 
+Configure `@nuxtjs/vuetify` with no TreeShaking:
+
+<<< @/docs/started/vuetify.notreeshaking.js
+
 Add `v-currency-field/nuxt` to the modules section of `nuxt.config.js`:
 
 <<< @/docs/started/nuxt.config.js
 
 #### Treeshaking
+
+Configure `@nuxtjs/vuetify` with TreeShaking:
+
+<<< @/docs/started/vuetify.treeshaking.js
 
 Add `v-currency-field/nuxt-treeshaking` to the modules section of `nuxt.config.js`:
 
