@@ -1,3 +1,6 @@
+buildModules: [
+    ['@nuxtjs/vuetify']
+],
 {
   modules: [
   	['v-currency-field/nuxt', {

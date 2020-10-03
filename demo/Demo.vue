@@ -14,7 +14,7 @@
                  dense 
                  v-model="value" 
                  locale="pt-BR" 
-                 :auto-decimal-mode="false" 
+                 :auto-decimal-mode="true" 
                  :decimal-length="2" 
                  :default-value="0" 
                  :value-as-integer="false"

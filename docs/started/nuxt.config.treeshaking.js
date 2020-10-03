@@ -1,3 +1,6 @@
+buildModules: [
+    ['@nuxtjs/vuetify', {treeShake: true}]
+],
 {
   modules: [
     ['v-currency-field/nuxt-treeshaking', {
