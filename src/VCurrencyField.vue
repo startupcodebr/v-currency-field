@@ -4,7 +4,7 @@
    v-model="formattedValue"
    v-bind="attrs"
    v-on="listeners()"
-   type="text"
+   type="tel"
    v-currency-directive="{currency, locale, distractionFree, precision: decimalLength, autoDecimalMode: decimalMode, valueRange, allowNegative, valueAsInteger}">
 
     <template v-for="(index, name) in $slots" v-slot:[name]>
